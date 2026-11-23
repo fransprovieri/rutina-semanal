@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light only;
   --ink: #16171A;
   --muted: #5E6672;
   --soft: #8A93A0;
@@ -223,6 +224,9 @@ details.card[open] summary { margin-bottom: 14px; }
 /* ---------- Escritorio ---------- */
 @media (min-width: 900px) {
   :root { --side: 248px; }
+  /* En pantallas grandes la foto se estira más: hace falta más desenfoque para el mismo efecto */
+  .sky::before { filter: blur(80px) saturate(55%) hue-rotate(8deg) brightness(1.15); }
+  .sky-2 { filter: blur(45px) saturate(40%) brightness(1.15); }
   .app { max-width: none; padding: 28px 40px 48px calc(var(--side) + 64px); }
   .app > * { max-width: 1120px; }
   .top { padding-top: 0; }
