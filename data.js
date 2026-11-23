@@ -58,7 +58,9 @@ window.DATA = {
     jazmin: { meta: 3, receta: 'platito' }
   },
   // Cenas rápidas: ingredientes cortados y porcionados; se cocinan en 15–25 min
-  cenas: ['bife', 'merluza', 'salteado', 'fajitas', 'pollo-plancha', 'fideos-brocoli'],
+  cenas: ['bife', 'merluza', 'salteado', 'fajitas', 'pollo-plancha', 'fideos-brocoli', 'milanesitas'],
+  // Recetas sin ingredientes en casa esta semana (se muestran aparte, como "para la próxima compra")
+  sinStock: ['cerdo', 'bolognesa'],
   desayunos: ['desayuno-a', 'desayuno-b'],
 
   // Guía de qué dejar en heladera y freezer
@@ -140,7 +142,7 @@ window.DATA = {
       nombre: 'Bowl de pollo, arroz y verduras al horno',
       tipo: 'Almuerzo', tiempo: '50 min en tanda · 3 min para servir',
       intro: 'Rinde 4 bowls. Aguanta 4 días en heladera.',
-      ingredientes: ['1 kg de pollo (pechuga o muslo)', '200 g de arroz crudo (o del arroz del domingo)', '1 calabaza chica, 2 zanahorias, 1 cebolla, 1 morrón', '1 papa o 1 batata', 'Aceite, limón, ajo, pimentón, orégano, sal'],
+      ingredientes: ['700 g de filet de pollo', '200 g de arroz crudo (o del arroz del domingo)', '1 calabaza chica, 2 zanahorias, 1 cebolla, 1 morrón', '1 papa o 1 batata', 'Aceite, limón, ajo, pimentón, orégano, sal'],
       pasos: [
         'Horno a 200 °C. Pollo con aceite, limón, ajo, pimentón, orégano y sal.',
         'Verduras en cubos parecidos (1 parte de papa, 3 del resto), en otra bandeja con aceite y sal.',
@@ -154,7 +156,7 @@ window.DATA = {
       nombre: 'Wraps de carne picada',
       tipo: 'Almuerzo', tiempo: '20 min en tanda · 5 min para armar',
       intro: 'El relleno aguanta 3 días en heladera o se congela en porciones.',
-      ingredientes: ['300 g de carne picada magra (2 porciones)', '1 cebolla, 1 morrón, 1 zanahoria rallada', 'Tortillas (2 por porción)', 'Queso cremoso, lechuga y tomate', 'Pimentón dulce, sal'],
+      ingredientes: ['300 g de carne picada magra (2 porciones)', 'Mix congelado de cebolla y morrón (o 1 cebolla y 1 morrón), 1 zanahoria rallada', 'Rapiditas o tortillas (2 por porción)', 'Tomate y palta (o queso, si hay)', 'Pimentón dulce, sal'],
       pasos: [
         'Cebolla y morrón picados 5 min en sartén con un poco de aceite.',
         'Sumá la carne, desarmala y cociná 8–10 min. Agregá la zanahoria, pimentón y sal.',
@@ -176,13 +178,13 @@ window.DATA = {
       ]
     },
     milanesas: {
-      nombre: 'Milanesas de pollo al horno con puré',
+      nombre: 'Milanesas al horno con puré (pollo, ternera o cerdo)',
       tipo: 'Almuerzo', tiempo: '40 min en tanda',
-      intro: 'Con milanesas ya empanadas de la carnicería: van del freezer al horno sin descongelar (sumá 5 min).',
-      ingredientes: ['800 g de milanesas de pollo', '2 papas y ½ calabaza para el puré', 'Manteca, nuez moscada, sal'],
+      intro: 'Hay de pollo, de ternera y de cerdo: van del freezer al horno sin descongelar (sumá 5 min). También sirven de cena.',
+      ingredientes: ['800 g de milanesas (pollo, ternera o cerdo)', 'Puré: 2 papas y ½ zapallo anco, o batata', 'Manteca, nuez moscada, sal'],
       pasos: [
         'Horno a 200 °C en fuente aceitada: 10 min, vuelta y 8–10 min más.',
-        'Puré: papa y calabaza en cubos, hervidas 15 min, pisadas con manteca, sal y nuez moscada.',
+        'Puré: papa y zapallo (o batata) en cubos, hervidos 15 min, pisados con manteca, sal y nuez moscada.',
         'Porcioná milanesa + puré en tuppers. Fría también va bien en un sándwich con tomate.'
       ]
     },
@@ -190,11 +192,11 @@ window.DATA = {
       nombre: 'Tarta de acelga, cebolla y queso',
       tipo: 'Almuerzo', tiempo: '1 h en tanda',
       intro: 'Rinde 6 porciones. 4 días en heladera o freezer en porciones.',
-      ingredientes: ['1 paquete de tapas de tarta (2 tapas)', '2 atados de acelga (solo las hojas, picadas)', '2 cebollas', '4 huevos', '200 g de queso cremoso en cubos', '50 g de queso rallado', 'Sal, pimienta, nuez moscada'],
+      ingredientes: ['1 paquete de tapas pascualina (2 tapas)', 'Acelga congelada: ½ bolsa (o 2 atados frescos)', 'Cebolla picada congelada: 1 taza (o 2 cebollas)', '4 huevos', '100 g de queso rallado (si hay cremoso, sumá 150 g en cubos)', 'Sal, pimienta, nuez moscada'],
       pasos: [
-        'Horno a 200 °C. Cebolla picada en sartén 8 min.',
-        'Sumá la acelga picada y cociná 5 min hasta que se achique. Escurrila bien apretando (si queda agua, la tarta se humedece).',
-        'Mezclá con los huevos batidos, los dos quesos, sal, pimienta y nuez moscada.',
+        'Horno a 200 °C. Cebolla picada (puede ir congelada) en sartén 8 min.',
+        'Sumá la acelga (congelada va directo) y cociná 5–8 min hasta que no quede agua. Escurrila bien apretando: si queda agua, la tarta se humedece.',
+        'Mezclá con los huevos batidos, el queso, sal, pimienta y nuez moscada.',
         'Una tapa en la tartera, el relleno, la otra tapa arriba. Repulgá los bordes y pinchá la tapa.',
         'Al horno 35–40 min, hasta que esté dorada. Enfriá y cortá en 6.'
       ]
@@ -229,10 +231,10 @@ window.DATA = {
       nombre: 'Platito de Jaz (varias cositas)',
       tipo: 'Almuerzo', tiempo: '5 min con todo listo',
       intro: 'Elegí 4 o 5 cositas de las que quedaron listas el domingo. Con legumbres cuenta como su ensalada de la semana.',
-      ingredientes: ['Legumbres: lentejas o porotos (½ taza)', 'Zanahoria rallada o en bastones', 'Tomates cherry', 'Huevo duro', 'Palta (cortada en el momento, con limón)', 'Extras: pollo en tiras, queso en cubos, arroz, choclo'],
+      ingredientes: ['Legumbres: lentejas o porotos (½ taza)', 'Zanahoria rallada o en bastones', 'Tomates cherry', 'Huevo duro', 'Palta (cortada en el momento, con limón)', 'Extras: atún, pollo en tiras, arroz, choclo, queso azul'],
       pasos: [
         'Combinación 1: lentejas + zanahoria rallada + cherrys + huevo duro + palta.',
-        'Combinación 2: porotos + pollo en tiras + cherrys + queso en cubos + choclo.',
+        'Combinación 2: porotos + atún + cherrys + choclo + palta.',
         'Combinación 3: arroz + huevo duro + palta + zanahoria en bastones + porotos.',
         'Aliño aparte en un frasquito: aceite de oliva, limón y sal (así no se humedece).'
       ]
@@ -241,20 +243,20 @@ window.DATA = {
       nombre: 'Ensalada simple (para sumar a cualquier almuerzo)',
       tipo: 'Almuerzo', tiempo: '3 min',
       intro: 'Al costado de cualquier almuerzo. Meta: 2 veces por semana.',
-      ingredientes: ['Lechuga lavada', 'Tomate', 'Zanahoria rallada', 'Huevo duro (opcional)', 'Aceite, limón y sal'],
+      ingredientes: ['Tomate redondo o cherry', 'Zanahoria rallada', 'Palta', 'Huevo duro (opcional)', 'Lechuga si hay', 'Aceite, aceto o limón, y sal'],
       pasos: ['Todo ya está listo del domingo: armala en el plato y condimentá en el momento.']
     },
 
     // ---------- Cenas rápidas ----------
     bife: {
       foto: { img: 'https://images.unsplash.com/photo-1644704265419-96ddaf628e71?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: '7WJV-SDSj6c', autor: 'Clark Douglas' },
-      nombre: 'Bife a la plancha con puré de calabaza y brócoli',
+      nombre: 'Bife a la plancha con puré de zapallo y zapallitos',
       tipo: 'Cena', tiempo: '20 min',
-      intro: 'Del freezer: bolsa de bifes (a la heladera la noche anterior), calabaza en cubos y brócoli.',
-      ingredientes: ['Bifes: 400 g en total', 'Calabaza en cubos', 'Brócoli', 'Manteca, sal, pimienta, nuez moscada'],
+      intro: 'Del freezer: bolsa de bifes (a la heladera la noche anterior) y zapallo en cubos.',
+      ingredientes: ['Bifes: 400 g en total', 'Zapallo anco en cubos', '2 zapallitos (o brócoli, si hay)', 'Manteca, sal, pimienta, nuez moscada'],
       pasos: [
         'Calabaza congelada: microondas tapada 8–10 min. Pisala con manteca, sal y nuez moscada.',
-        'Brócoli congelado: 4 min al vapor o en sartén con un poco de agua.',
+        'Zapallitos en medias lunas, salteados 5 min con un poco de aceite y sal.',
         'Plancha bien caliente: bifes secos con papel, sal, 3–4 min por lado.',
         'Reposo 3 min antes de cortar.'
       ]
@@ -304,13 +306,24 @@ window.DATA = {
         'Verduras salteadas 6 min a fuego fuerte.'
       ]
     },
-    'fideos-brocoli': {
-      nombre: 'Fideos con brócoli y pollo',
+    milanesitas: {
+      nombre: 'Milanesitas del freezer con ensalada',
       tipo: 'Cena', tiempo: '20 min',
-      intro: 'Del freezer: cubos de pollo y brócoli.',
-      ingredientes: ['250 g de fideos cortos', '1 brócoli (o 1 bolsa congelada)', '300 g de pollo en cubos', '2 dientes de ajo', 'Aceite de oliva, queso rallado, limón, sal'],
+      intro: 'La cena de emergencia: las milanesitas de pollo o de merluza y acelga que hay en el freezer.',
+      ingredientes: ['4 milanesitas (pollo o merluza y acelga)', 'Tomate, zanahoria rallada y palta', 'Aceite, aceto o limón, sal'],
       pasos: [
-        'Hervé los fideos. En los últimos 3 minutos sumá el brócoli a la misma olla.',
+        'Horno a 200 °C, milanesitas congeladas en fuente aceitada: 10 min, vuelta y 8 min más.',
+        'Mientras, ensalada de tomate, zanahoria y palta.',
+        'Regla del plato: media ensalada, milanesitas como proteína.'
+      ]
+    },
+    'fideos-brocoli': {
+      nombre: 'Fideos con pollo y verduras',
+      tipo: 'Cena', tiempo: '20 min',
+      intro: 'Del freezer: cubos de pollo. Esta semana con zapallitos y el mix de morrón; cuando haya, brócoli.',
+      ingredientes: ['250 g de fideos cortos', '2 zapallitos y ½ bolsa de mix de cebolla y morrón (o 1 brócoli)', '300 g de pollo en cubos', '2 dientes de ajo', 'Aceite de oliva, queso rallado, limón, sal'],
+      pasos: [
+        'Hervé los fideos. Si es brócoli, sumalo a la olla los últimos 3 minutos; si son zapallitos y morrón, salteálos en la sartén.',
         'Mientras, sartén con aceite: pollo 6–8 min hasta dorar, y el ajo picado el último minuto.',
         'Escurrí guardando un cucharón del agua. Mezclá todo con ese agua, aceite de oliva y queso rallado.',
         'Unas gotas de limón al servir.'
@@ -345,11 +358,13 @@ window.DATA = {
     ]
   },
 
+  // Inventario: lo que hay en casa (compra del 23/11 + freezer). Tildá lo que se va terminando.
+  superNota: 'Compra del 23/11 y lo que ya había. Tildá lo que se va terminando; lo de "Falta comprar", al comprarlo.',
   super: [
-    { cat: 'Proteínas', items: ['Pechuga de pollo · 1,7 kg — bowls y cenas', 'Milanesas de pollo ya empanadas · 800 g', 'Carne picada magra · 1,2 kg — wraps, pastel y bolognesa', 'Bife o carne para tiras · 800 g', 'Lomo de cerdo · 600 g', 'Milanesas de merluza · 500 g', 'Huevos · 1 maple de 30', 'Lentejas · 1 lata', 'Porotos · 1 lata'] },
-    { cat: 'Lácteos', items: ['Yogur natural sin azúcar · 8 potes', 'Queso cremoso o de barra · 500 g', 'Queso rallado', 'Manteca'] },
-    { cat: 'Carbohidratos', items: ['Arroz · 1 kg', 'Papa · 2 kg', 'Batata · 1 kg', 'Fideos · 1 kg (largos y cortos)', 'Tortillas · 16', 'Tapas de tarta · 1 paquete', 'Choclo · 1 lata (platitos)'] },
-    { cat: 'Verduras', items: ['Calabaza o zapallo anco · 2', 'Zanahoria · 1,5 kg', 'Cebolla · 2 kg', 'Morrón · 5', 'Zapallitos · 1 kg', 'Brócoli · 3', 'Acelga · 2 atados (ya tienen)', 'Tomate · 1 kg', 'Tomates cherry · 2 bandejas', 'Lechuga · 1', 'Palta · 3', 'Ajo', 'Limones · 3'] },
-    { cat: 'Despensa', items: ['Bolsas tipo zip para freezer', 'Tuppers individuales · 8–10', 'Film y papel aluminio', 'Puré de tomate · 1 caja', 'Salsa de soja', 'Mostaza', 'Aceite de oliva', 'Sal, pimienta, orégano, pimentón dulce, nuez moscada', 'Yerba, café y dulce de arándanos'] }
+    { cat: 'Falta comprar', items: ['Brócoli · 1–2 (fideos, bife)', 'Lechuga · 1 (ensaladas)', 'Queso cremoso · 200 g (tarta, fajitas)', 'Salsa de soja (si no hay, para el salteado)', 'Lomo de cerdo o puré de tomate, si quieren cerdo o bolognesa'] },
+    { cat: 'Freezer', items: ['Milanesas de pollo · 475 g', 'Milanesas de ternera · 590 g', 'Milanesas de cerdo · 480 g', 'Milanesas de merluza · 2', 'Milanesitas: 2 de pollo y 2 de merluza y acelga', 'Acelga congelada · bolsa', 'Cebolla picada congelada · bolsa', 'Mix de cebolla y morrón congelado'] },
+    { cat: 'Carne y pollo (porcionar al freezer)', items: ['Filet de pollo · 1 kg', 'Bife · 670 g', 'Carne picada · 785 g'] },
+    { cat: 'Verdura y fruta', items: ['Zapallo anco · 1 kg', 'Batata · 580 g', 'Zanahoria · 770 g', 'Zapallitos · 680 g', 'Cebolla · 450 g', 'Morrón rojo · 1', 'Tomate · 700 g', 'Tomates cherry · 500 g', 'Paltas · 4', 'Limones', 'Uvas, melón y manzanas'] },
+    { cat: 'Despensa y heladera', items: ['Huevos', 'Arroz', 'Papas', 'Fideos', 'Rapiditas · 2 paquetes', 'Tapas pascualina · 1', 'Lentejas · 1', 'Porotos colorados · 1', 'Choclo · 1 lata', 'Atún · 1 lata', 'Yogur griego · 3', 'Queso rallado', 'Queso azul', 'Aceto, mayonesa'] }
   ]
 };

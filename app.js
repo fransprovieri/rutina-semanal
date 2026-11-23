@@ -223,8 +223,9 @@
           const nom = D.usuarios.find((x) => x.id === u).nombre;
           const e = D.ensaladas[u];
           return `<div class="section-title" style="padding-top:8px"><h2 style="font-size:19px">De ${esc(nom)}</h2><span>Ensalada cruda ${e.meta} por semana</span></div>
-            <div class="group flat">${D.almuerzos[u].map(fila).join('')}${u === 'fran' ? fila('ensalada-fran') : ''}</div>`;
+            <div class="group flat">${D.almuerzos[u].filter((id) => !(D.sinStock || []).includes(id)).map(fila).join('')}${u === 'fran' ? fila('ensalada-fran') : ''}</div>`;
         }).join('') +
+        ((D.sinStock || []).length ? `<div class="section-title" style="padding-top:8px"><h2 style="font-size:19px">Sin ingredientes esta semana</h2><span>Para la próxima compra</span></div><div class="group flat" style="opacity:0.6">${D.sinStock.map(fila).join('')}</div>` : '') +
         `<div class="section-title" style="padding-top:8px"><h2 style="font-size:19px">Desayunos</h2></div><div class="group flat">${D.desayunos.map(fila).join('')}</div>`;
     } else if (v === 'cenas') {
       body = `<p class="muted small" style="padding:0 6px">Los ingredientes quedan cortados y porcionados (freezer y heladera). A la noche elegís una y se cocina en 15–30 min.</p>
@@ -281,11 +282,11 @@
           <span class="box">${icon.check}</span><span class="grow"><b style="font-size:16px">${esc(txt)}</b></span></button>`;
       return extra ? `<div class="row" style="padding:0 16px 0 0">${b}<button class="icon-btn" data-action="superDel" data-key="${esc(key)}" aria-label="Borrar ${esc(txt)}">${icon.close}</button></div>` : b;
     };
-    const cats = D.super.map((c) => `<div class="super-cat"><h3>${esc(c.cat)}</h3><div class="group">${c.items.map((t) => item(c.cat + '|' + t, escalar(t))).join('')}</div></div>`).join('');
+    const cats = D.super.map((c) => `<div class="super-cat"><h3>${esc(c.cat)}</h3><div class="group">${c.items.map((t) => item(c.cat + '|' + t, t)).join('')}</div></div>`).join('');
     const extras = S.extras.length ? `<div class="super-cat"><h3>Agregados</h3><div class="group">${S.extras.map((t) => item('extra|' + t, t, true)).join('')}</div></div>` : '';
     return `<div class="section">
-        <div class="section-title"><h2>Lista del súper</h2><span>${marcados}/${total}</span></div>
-        <p class="muted small">Una semana tipo para dos, en porciones chicas. Tildá lo que ya tienen en casa o lo que ya está en el carrito.</p>
+        <div class="section-title"><h2>Lo que hay</h2><span>${marcados}/${total}</span></div>
+        <p class="muted small">${esc(D.superNota || '')}</p>
         <form class="add" data-form="addItem"><input name="item" placeholder="Agregar algo…" aria-label="Agregar a la lista" autocomplete="off"><button class="btn" type="submit">Agregar</button></form>
         <div class="super-grid">${cats}${extras}</div>
         <button class="btn ghost" data-action="superReset">${UI.superConfirm ? 'Tocá de nuevo para confirmar' : 'Desmarcar todo (nueva semana)'}</button>
