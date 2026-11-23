@@ -19,7 +19,8 @@
 }
 
 * { box-sizing: border-box; }
-html, body { margin: 0; min-height: 100%; background: #6F9FD3; }
+html { margin: 0; min-height: 100%; background: #5C8FC9; }
+body { margin: 0; min-height: 100%; background: transparent; }
 body { overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
 button, input { font: inherit; color: inherit; }
 button { cursor: pointer; }
@@ -175,7 +176,7 @@ em, .serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic
 .timer-main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 14px; }
 .timer-main .phase { font-size: 17px; opacity: 0.85; }
 .timer-main h2 { font-size: 40px; line-height: 1.05; }
-.timer-main .count { font-family: 'Inter Tight', sans-serif; font-size: 128px; font-weight: 500; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.timer-main .count { font-family: 'Inter Tight', sans-serif; font-size: 104px; font-weight: 500; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
 .timer-main p { font-size: 18px; max-width: 420px; opacity: 0.92; }
 .timer .next { text-align: center; font-size: 16px; opacity: 0.9; }
 .timer .btn-row .btn { background: rgba(255,255,255,0.22); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
@@ -246,3 +247,31 @@ details.card[open] summary { margin-bottom: 14px; }
   .sheet { border-radius: 34px; max-height: 88vh; max-width: 720px; padding: 30px; }
   .row:hover, .meal:hover { background-color: rgba(255,255,255,0.25); }
 }
+
+/* Fotos de recetas */
+.thumb { flex: none; width: 52px; height: 52px; border-radius: 16px; object-fit: cover; background: rgba(255,255,255,0.5); display: block; }
+.thumb.ph { background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.35)); }
+.hero-img { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.hero-img img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 24px; display: block; background: rgba(255,255,255,0.5); }
+.hero-img figcaption { font-size: 12px; color: var(--muted); padding: 0 6px; }
+.hero-img a { color: inherit; }
+
+/* Guías de ejercicios */
+.fig { display: block; width: 100%; height: 100%; color: var(--ink); overflow: visible; }
+.fig line, .fig path { stroke: currentColor; stroke-width: 5; stroke-linecap: round; fill: none; }
+.fig .back { opacity: 0.4; }
+.fig .head { fill: currentColor; }
+.fig .ground { stroke-width: 1.5; opacity: 0.25; }
+.fig .eq circle { fill: currentColor; stroke: none; }
+.fig .eq line { stroke-width: 3; }
+.fig .eq path { stroke-width: 2.5; }
+.fig .door { fill: none; stroke: currentColor; stroke-width: 2; opacity: 0.5; }
+.fig .band { stroke-width: 2; stroke-dasharray: 3 3; opacity: 0.8; }
+.fig .rope { stroke-width: 2; opacity: 0.7; }
+.fig.anim .pA { animation: figA 2.4s infinite; }
+.fig.anim .pB { animation: figB 2.4s infinite; }
+@keyframes figA { 0%, 42% { opacity: 1; } 50%, 92% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes figB { 0%, 42% { opacity: 0; } 50%, 92% { opacity: 1; } 100% { opacity: 0; } }
+.fig-box { flex: none; width: 92px; height: 78px; border-radius: 18px; background: rgba(255,255,255,0.7); padding: 6px 8px; }
+.timer-fig { width: 200px; height: 166px; padding: 14px; border-radius: 32px; background: rgba(255,255,255,0.92); }
+.timer-fig.dim { opacity: 0.7; }

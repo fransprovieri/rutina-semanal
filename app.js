@@ -54,6 +54,9 @@
     clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 1800);
   };
 
+  const foto = (r, w) => r.foto ? `${r.foto.img}&w=${w}` : null;
+  const thumb = (r) => r.foto ? `<img class="thumb" src="${foto(r, 160)}" alt="" loading="lazy">` : '<span class="thumb ph"></span>';
+
   // Dos columnas en escritorio; en el celular se apilan
   const cols = (izq, der) => `<div class="cols"><div class="col">${izq}</div><div class="col">${der}</div></div>`;
 
@@ -96,7 +99,7 @@
     const comida = (lbl, id) => {
       const r = D.recetas[id];
       return `<button class="row" data-action="receta" data-id="${id}">
-        <span class="stripe" style="background:var(--orange)"></span>
+        ${thumb(r)}
         <span class="grow"><span class="sub">${lbl}</span><b>${esc(r.nombre)}</b></span>
         <span class="chev">${icon.chev}</span></button>`;
     };
@@ -176,7 +179,7 @@
       Object.entries(D.recetas).forEach(([id, r]) => { (grupos[r.tipo] = grupos[r.tipo] || []).push([id, r]); });
       body = ['Preparación', 'Desayuno', 'Almuerzo', 'Cena'].filter((g) => grupos[g]).map((g) =>
         `<div class="section-title" style="padding-top:6px"><h2 style="font-size:18px">${g}</h2></div><div class="group flat">` +
-        grupos[g].map(([id, r]) => `<button class="row" data-action="receta" data-id="${id}"><span class="grow"><b>${esc(r.nombre)}</b><span class="sub">${esc(r.tiempo)}</span></span><span class="chev">${icon.chev}</span></button>`).join('') + '</div>'
+        grupos[g].map(([id, r]) => `<button class="row" data-action="receta" data-id="${id}">${thumb(r)}<span class="grow"><b>${esc(r.nombre)}</b><span class="sub">${esc(r.tiempo)}</span></span><span class="chev">${icon.chev}</span></button>`).join('') + '</div>'
       ).join('');
     }
     return `<div class="section"><div class="section-title"><h2>Comidas</h2></div>${seg}${body}</div>
@@ -193,7 +196,7 @@
   function vistaEntreno() {
     const F = D.fuerza;
     const w = semana2() ? 45 : 40, r = 60 - w;
-    const ej = F.ejercicios.map((e, i) => `<div class="row"><span class="tag">${i + 1}</span><span class="grow"><b>${esc(e.nombre)}</b><span class="sub">${esc(e.tip)}</span></span></div>`).join('');
+    const ej = F.ejercicios.map((e, i) => `<div class="row"><span class="fig-box">${figura(e.fig)}</span><span class="grow"><b>${esc(e.nombre)}</b><span class="sub">${esc(e.tip)}</span></span></div>`).join('');
     const hd = parse(hoy()).getDay();
     const sem = ORDEN_SEMANA.map((d) => {
       const e = D.entreno[d];
@@ -301,6 +304,7 @@
     back.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rt">
       <div class="sheet-head"><div><span class="eyebrow">${esc(r.tipo)} · ${esc(r.tiempo)}</span><h2 id="rt">${esc(r.nombre)}</h2></div>
         <button class="icon-btn" data-close aria-label="Cerrar">${icon.close}</button></div>
+      ${r.foto ? `<figure class="hero-img"><img src="${foto(r, 900)}" alt="${esc(r.nombre)}"><figcaption>Foto: <a href="https://unsplash.com/photos/${r.foto.id}?utm_source=rutina_semanal&utm_medium=referral" target="_blank" rel="noopener">${esc(r.foto.autor)}</a> en <a href="https://unsplash.com/?utm_source=rutina_semanal&utm_medium=referral" target="_blank" rel="noopener">Unsplash</a> · de referencia</figcaption></figure>` : ''}
       ${r.intro ? `<p class="muted">${esc(r.intro)}</p>` : ''}
       ${r.ingredientes.length ? `<div class="card"><b>Ingredientes (para dos)</b><ul class="ing" style="margin-top:8px">${r.ingredientes.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>` : ''}
       <div><b>Paso a paso</b> <span class="muted small">· tocá un paso para tacharlo</span></div>
@@ -322,16 +326,16 @@
   function secuencia() {
     const F = D.fuerza;
     const w = semana2() ? 45 : 40, r = 60 - w;
-    const seq = [{ fase: 'Calentamiento', nombre: F.calentamiento.nombre, tip: F.calentamiento.tip, s: F.calentamiento.segundos, tipo: 'work' }];
+    const seq = [{ fase: 'Calentamiento', nombre: F.calentamiento.nombre, tip: F.calentamiento.tip, s: F.calentamiento.segundos, tipo: 'work', fig: F.calentamiento.fig }];
     for (let v = 1; v <= F.vueltas; v++) {
       F.ejercicios.forEach((e, i) => {
-        seq.push({ fase: `Vuelta ${v} de ${F.vueltas} · ${i + 1}/${F.ejercicios.length}`, nombre: e.nombre, tip: e.tip, s: w, tipo: 'work' });
+        seq.push({ fase: `Vuelta ${v} de ${F.vueltas} · ${i + 1}/${F.ejercicios.length}`, nombre: e.nombre, tip: e.tip, s: w, tipo: 'work', fig: e.fig });
         seq.push({ fase: 'Descanso', nombre: 'Respirá', tip: '', s: r, tipo: 'rest' });
       });
     }
     seq.pop();
     seq.push({ fase: 'Descanso', nombre: 'Respirá', tip: '', s: r, tipo: 'rest' });
-    F.final.forEach((e) => seq.push({ fase: 'Final', nombre: e.nombre, tip: e.tip, s: e.segundos, tipo: 'work' }));
+    F.final.forEach((e) => seq.push({ fase: 'Final', nombre: e.nombre, tip: e.tip, s: e.segundos, tipo: 'work', fig: e.fig }));
     return seq;
   }
   let actx;
@@ -376,7 +380,9 @@
     T.el.className = 'timer ' + cur.tipo;
     T.el.innerHTML = `<div class="timer-top"><span>${Math.round(done / total * 100)}%</span>
         <button class="icon-btn" data-t="stop" aria-label="Terminar">${icon.close}</button></div>
-      <div class="timer-main"><span class="phase">${esc(cur.fase)}</span><h2>${esc(cur.nombre)}</h2>
+      <div class="timer-main"><span class="phase">${esc(cur.fase)}</span>
+        ${cur.tipo === 'rest' && next && next.fig ? `<div class="timer-fig dim">${figura(next.fig)}</div>` : cur.fig ? `<div class="timer-fig">${figura(cur.fig)}</div>` : ''}
+        <h2>${esc(cur.nombre)}</h2>
         <div class="count" aria-live="off">${mm > 0 ? mm + ':' + ss : T.left}</div>
         ${cur.tip ? `<p>${esc(cur.tip)}</p>` : ''}</div>
       <div class="next">${next ? 'Sigue: <b>' + esc(next.nombre) + '</b>' : 'Último ejercicio'}</div>

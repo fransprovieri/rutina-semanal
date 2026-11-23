@@ -52,6 +52,7 @@ window.DATA = {
 
   recetas: {
     'desayuno-a': {
+      foto: { img: 'https://images.unsplash.com/photo-1583552336796-531290f1fe2a?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'yPHKox1Quyw', autor: 'Alfredo Alvarado' },
       nombre: 'Desayuno A · Huevos revueltos con tostada',
       tipo: 'Desayuno', tiempo: '10 min',
       ingredientes: ['5–6 huevos', '2 rebanadas de pan', 'Manteca (1 pulgar cada uno)', 'Sal y pimienta', 'Café o mate'],
@@ -74,6 +75,7 @@ window.DATA = {
       ]
     },
     mealprep: {
+      foto: { img: 'https://images.unsplash.com/photo-1543353071-c953d88f7033?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'sosOqjx31Go', autor: 'Ella Olsson' },
       nombre: 'Meal prep del domingo',
       tipo: 'Preparación', tiempo: '1 h 15 min',
       intro: 'Deja listos los almuerzos de lunes a miércoles y los huevos de los desayunos. Todo entra en la heladera hasta el miércoles.',
@@ -103,6 +105,7 @@ window.DATA = {
       ]
     },
     bowl: {
+      foto: { img: 'https://images.unsplash.com/photo-1543353071-c953d88f7033?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'sosOqjx31Go', autor: 'Ella Olsson' },
       nombre: 'Bowl de pollo, arroz y verduras al horno',
       tipo: 'Almuerzo', tiempo: '5 min (con meal prep)',
       ingredientes: ['Pollo del meal prep (1–2 palmas c/u)', 'Arroz (1 puño c/u)', 'Verduras al horno (2 puños c/u)', 'Opcional: 1 tomate, limón, aceite de oliva'],
@@ -113,6 +116,7 @@ window.DATA = {
       ]
     },
     bife: {
+      foto: { img: 'https://images.unsplash.com/photo-1644704265419-96ddaf628e71?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: '7WJV-SDSj6c', autor: 'Clark Douglas' },
       nombre: 'Bife a la plancha con puré de calabaza y brócoli',
       tipo: 'Cena', tiempo: '25 min',
       ingredientes: ['500 g de bife (nalga, cuadril o bife de chorizo)', '½ calabaza', '1 brócoli', 'Manteca, sal, pimienta, nuez moscada'],
@@ -125,6 +129,7 @@ window.DATA = {
       ]
     },
     wrap: {
+      foto: { img: 'https://images.unsplash.com/photo-1719282431723-9d0f4370d4bc?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'xq04aTV-LVk', autor: 'Bayuaji Abiyu' },
       nombre: 'Wraps de carne picada',
       tipo: 'Almuerzo', tiempo: '20 min',
       intro: 'Hacé el relleno para dos días: la mitad hoy, la otra mitad se guarda para el viernes.',
@@ -138,12 +143,14 @@ window.DATA = {
       ]
     },
     'wrap-sobra': {
+      foto: { img: 'https://images.unsplash.com/photo-1719282431723-9d0f4370d4bc?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'xq04aTV-LVk', autor: 'Bayuaji Abiyu' },
       nombre: 'Wraps de carne picada (relleno del martes)',
       tipo: 'Almuerzo', tiempo: '5 min',
       ingredientes: ['Relleno guardado del martes', '4 tortillas', 'Queso, lechuga y tomate'],
       pasos: ['Calentá el relleno en sartén o microondas.', 'Tortillas 20 s por lado en sartén seca.', 'Armá y enrollá igual que el martes.']
     },
     merluza: {
+      foto: { img: 'https://images.unsplash.com/photo-1793691279531-f4a9873169d5?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'gJCJreBH0kM', autor: 'Murat Ts.' },
       nombre: 'Merluza al horno con papas y zapallitos',
       tipo: 'Cena', tiempo: '35 min',
       ingredientes: ['500 g de filet de merluza', '2 papas medianas', '3 zapallitos', '1 limón', 'Ajo, perejil, aceite de oliva, sal, pimienta'],
@@ -156,6 +163,7 @@ window.DATA = {
       ]
     },
     cerdo: {
+      foto: { img: 'https://images.unsplash.com/photo-1579619002916-88cd4c81a70c?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'CzD0EHabuzE', autor: 'James Frewin' },
       nombre: 'Lomo de cerdo al horno con batata y zanahoria',
       tipo: 'Cena', tiempo: '45 min',
       intro: 'Hacé el doble: la mitad es el almuerzo del jueves.',
@@ -169,6 +177,7 @@ window.DATA = {
       ]
     },
     'cerdo-sobra': {
+      foto: { img: 'https://images.unsplash.com/photo-1579619002916-88cd4c81a70c?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'CzD0EHabuzE', autor: 'James Frewin' },
       nombre: 'Lomo de cerdo con batata (lo del miércoles)',
       tipo: 'Almuerzo', tiempo: '5 min',
       ingredientes: ['Lomo y verduras guardadas del miércoles', 'Opcional: tomate en rodajas'],
@@ -188,6 +197,7 @@ window.DATA = {
       ]
     },
     bolognesa: {
+      foto: { img: 'https://images.unsplash.com/photo-1622973536968-3ead9e780960?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'sA3wymYqyaI', autor: 'Homescreenify' },
       nombre: 'Fideos con bolognesa mitad carne, mitad lentejas',
       tipo: 'Cena', tiempo: '35 min',
       intro: 'Las legumbres de la semana, escondidas en la salsa.',
@@ -202,6 +212,7 @@ window.DATA = {
       ]
     },
     tortilla: {
+      foto: { img: 'https://images.unsplash.com/photo-1639669794539-952631b44515?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'z4CQtd07u5k', autor: 'blackieshoot' },
       nombre: 'Tortilla de papa y espinaca al horno',
       tipo: 'Almuerzo', tiempo: '40 min',
       ingredientes: ['6 huevos', '2 papas', '1 atado de espinaca (o ½ bolsa congelada)', '1 cebolla', '50 g de queso rallado', 'Sal, pimienta, aceite', 'Tomate para acompañar'],
@@ -233,19 +244,19 @@ window.DATA = {
   },
 
   fuerza: {
-    calentamiento: { nombre: 'Soga suave', segundos: 120, tip: 'Saltos chicos con los dos pies.' },
+    calentamiento: { nombre: 'Soga suave', fig: 'soga', segundos: 120, tip: 'Saltos chicos con los dos pies.' },
     ejercicios: [
-      { nombre: 'Sentadilla goblet', tip: 'Kettlebell de 8 kg contra el pecho. Bajá con la espalda recta.' },
-      { nombre: 'Remo con banda', tip: 'Anclada a la puerta (bien cerrada). Codos hacia atrás, apretá la espalda.' },
-      { nombre: 'Peso muerto rumano', tip: 'Kettlebell. Cadera hacia atrás, rodillas apenas flexionadas, espalda recta.' },
-      { nombre: 'Flexiones', tip: 'Con rodillas apoyadas si hace falta.' },
-      { nombre: 'Press de hombros', tip: 'Mancuernas de 3 kg. Muchas reps, sin arquear la espalda.' },
-      { nombre: 'Estocadas hacia atrás', tip: 'Una mancuerna en cada mano, alternando piernas.' }
+      { nombre: 'Sentadilla goblet', fig: 'goblet', tip: 'Kettlebell de 8 kg contra el pecho. Bajá con la espalda recta.' },
+      { nombre: 'Remo con banda', fig: 'remo', tip: 'Anclada a la puerta (bien cerrada). Codos hacia atrás, apretá la espalda.' },
+      { nombre: 'Peso muerto rumano', fig: 'rumano', tip: 'Kettlebell. Cadera hacia atrás, rodillas apenas flexionadas, espalda recta.' },
+      { nombre: 'Flexiones', fig: 'flexion', tip: 'Con rodillas apoyadas si hace falta.' },
+      { nombre: 'Press de hombros', fig: 'press', tip: 'Mancuernas de 3 kg. Muchas reps, sin arquear la espalda.' },
+      { nombre: 'Estocadas hacia atrás', fig: 'estocada', tip: 'Una mancuerna en cada mano, alternando piernas.' }
     ],
     vueltas: 2,
     final: [
-      { nombre: 'Plancha', segundos: 30, tip: 'Cuerpo recto, abdomen apretado.' },
-      { nombre: 'Soga', segundos: 30, tip: '¡Último esfuerzo!' }
+      { nombre: 'Plancha', fig: 'plancha', segundos: 30, tip: 'Cuerpo recto, abdomen apretado.' },
+      { nombre: 'Soga', fig: 'soga', segundos: 30, tip: '¡Último esfuerzo!' }
     ],
     progresion: 'Semana 2: 45 s de trabajo y 15 s de descanso. Cuando el peso muerto salga cómodo, cambialo por swings.'
   },
