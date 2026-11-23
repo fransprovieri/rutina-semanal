@@ -69,7 +69,7 @@ window.DATA = {
       'Mix para fajitas: cebolla y morrón en tiras',
       'Brócoli en ramitos, blanqueado 2 min y bien seco',
       'Calabaza en cubos (para puré)',
-      'Espinaca (si es fresca, blanqueada y escurrida)'
+      'Acelga: hojas picadas, blanqueadas 2 min y bien escurridas (en bollitos)'
     ] },
     { titulo: 'Heladera · listo para usar', dura: '3–4 días', items: [
       'Zanahoria en bastones y rallada',
@@ -182,13 +182,13 @@ window.DATA = {
       ]
     },
     tarta: {
-      nombre: 'Tarta de espinaca, cebolla y queso',
+      nombre: 'Tarta de acelga, cebolla y queso',
       tipo: 'Almuerzo', tiempo: '1 h en tanda',
       intro: 'Rinde 6 porciones. 4 días en heladera o freezer en porciones.',
-      ingredientes: ['1 paquete de tapas de tarta (2 tapas)', '2 atados de espinaca o 1 bolsa congelada', '2 cebollas', '4 huevos', '200 g de queso cremoso en cubos', '50 g de queso rallado', 'Sal, pimienta, nuez moscada'],
+      ingredientes: ['1 paquete de tapas de tarta (2 tapas)', '2 atados de acelga (solo las hojas, picadas)', '2 cebollas', '4 huevos', '200 g de queso cremoso en cubos', '50 g de queso rallado', 'Sal, pimienta, nuez moscada'],
       pasos: [
         'Horno a 200 °C. Cebolla picada en sartén 8 min.',
-        'Sumá la espinaca hasta que se achique. Escurrila bien apretando (si queda agua, la tarta se humedece).',
+        'Sumá la acelga picada y cociná 5 min hasta que se achique. Escurrila bien apretando (si queda agua, la tarta se humedece).',
         'Mezclá con los huevos batidos, los dos quesos, sal, pimienta y nuez moscada.',
         'Una tapa en la tartera, el relleno, la otra tapa arriba. Repulgá los bordes y pinchá la tapa.',
         'Al horno 35–40 min, hasta que esté dorada. Enfriá y cortá en 6.'
@@ -345,7 +345,7 @@ window.DATA = {
     { cat: 'Proteínas', items: ['Pollo (pechuga y muslo) · 2,5 kg — bowls, milanesas y cenas', 'Carne picada magra · 1,2 kg — wraps, pastel y bolognesa', 'Bife o carne para tiras · 800 g', 'Lomo de cerdo · 600 g', 'Merluza en filet · 500 g', 'Huevos · 1 maple de 30', 'Lentejas · 1 lata', 'Porotos · 1 lata'] },
     { cat: 'Lácteos', items: ['Yogur natural sin azúcar · 8 potes', 'Queso cremoso o de barra · 500 g', 'Queso rallado', 'Manteca'] },
     { cat: 'Carbohidratos', items: ['Arroz · 1 kg', 'Papa · 2 kg', 'Batata · 1 kg', 'Fideos · 1 kg (largos y cortos)', 'Tortillas · 16', 'Tapas de tarta · 1 paquete', 'Pan rallado · 2 tazas', 'Choclo · 1 lata (platitos)'] },
-    { cat: 'Verduras', items: ['Calabaza o zapallo anco · 2', 'Zanahoria · 1,5 kg', 'Cebolla · 2 kg', 'Morrón · 5', 'Zapallitos · 1 kg', 'Brócoli · 3', 'Espinaca · 2 atados o 1 bolsa congelada', 'Tomate · 1 kg', 'Tomates cherry · 2 bandejas', 'Lechuga · 1', 'Palta · 3', 'Ajo', 'Limones · 3'] },
+    { cat: 'Verduras', items: ['Calabaza o zapallo anco · 2', 'Zanahoria · 1,5 kg', 'Cebolla · 2 kg', 'Morrón · 5', 'Zapallitos · 1 kg', 'Brócoli · 3', 'Acelga · 2 atados (ya tienen)', 'Tomate · 1 kg', 'Tomates cherry · 2 bandejas', 'Lechuga · 1', 'Palta · 3', 'Ajo', 'Limones · 3'] },
     { cat: 'Despensa', items: ['Bolsas tipo zip para freezer', 'Tuppers individuales · 8–10', 'Film y papel aluminio', 'Puré de tomate · 1 caja', 'Salsa de soja', 'Mostaza', 'Aceite de oliva', 'Sal, pimienta, orégano, pimentón dulce, nuez moscada', 'Yerba, café y dulce de arándanos'] }
   ]
 };
