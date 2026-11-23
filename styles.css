@@ -19,7 +19,7 @@
 }
 
 * { box-sizing: border-box; }
-html { margin: 0; min-height: 100%; background: #6A8DB8; }
+html { margin: 0; min-height: 100%; background: #7A9DC8; }
 body { margin: 0; min-height: 100%; background: transparent; }
 body { overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
 button, input { font: inherit; color: inherit; }
@@ -29,16 +29,16 @@ p { margin: 0; }
 em, .serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: 0; }
 
 /* Cielo de fondo, fijo: foto de Unsplash muy desenfocada */
-.sky { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: linear-gradient(180deg, #3A5F8C 0%, #6E93BF 45%, #AFC4D8 100%); }
+.sky { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: linear-gradient(180deg, #4A70A0 0%, #82A6D0 45%, #C3D5E6 100%); }
 .sky::before, .sky-2 { content: ''; position: absolute; inset: -30%; background: url("https://images.unsplash.com/photo-1626166466949-3e027ee4dac0?ixlib=rb-4.1.0&q=70&fm=jpg&crop=entropy&cs=srgb&w=1080") center / cover no-repeat; will-change: transform; backface-visibility: hidden; }
 /* Capa principal: deriva muy lenta (solo se anima transform, lo mueve la GPU) */
-.sky::before { filter: blur(28px) saturate(55%) hue-rotate(8deg) brightness(0.95); animation: drift-a 45s ease-in-out infinite alternate; }
+.sky::before { filter: blur(28px) saturate(55%) hue-rotate(8deg) brightness(1.15); animation: drift-a 45s ease-in-out infinite alternate; }
 /* Segunda capa espejada y más transparente, va al revés: da sensación de profundidad */
-.sky-2 { filter: blur(14px) saturate(40%); opacity: 0.5; mix-blend-mode: screen; transform: scaleX(-1); animation: drift-b 32s ease-in-out infinite alternate; }
+.sky-2 { filter: blur(14px) saturate(40%) brightness(1.15); opacity: 0.55; mix-blend-mode: screen; transform: scaleX(-1); animation: drift-b 32s ease-in-out infinite alternate; }
 @keyframes drift-a { from { transform: translate3d(-12%, -4%, 0) scale(1.05); } to { transform: translate3d(12%, 4%, 0) scale(1.18); } }
 @keyframes drift-b { from { transform: scaleX(-1) translate3d(-16%, 5%, 0) scale(1.2); } to { transform: scaleX(-1) translate3d(16%, -5%, 0) scale(1.05); } }
 @media (prefers-reduced-motion: reduce) { .sky::before, .sky-2 { animation: none; } }
-.sky::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(40, 60, 95, 0.38) 0%, rgba(90, 110, 140, 0.15) 45%, rgba(140, 150, 162, 0.35) 100%); }
+.sky::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(40, 60, 95, 0.22) 0%, rgba(255, 255, 255, 0.06) 45%, rgba(190, 198, 208, 0.25) 100%); }
 
 .app { max-width: 640px; margin: 0 auto; padding: calc(env(safe-area-inset-top) + 14px) 18px calc(var(--nav-h) + env(safe-area-inset-bottom) + 40px); }
 
