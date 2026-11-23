@@ -54,6 +54,9 @@
     clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 1800);
   };
 
+  // Dos columnas en escritorio; en el celular se apilan
+  const cols = (izq, der) => `<div class="cols"><div class="col">${izq}</div><div class="col">${der}</div></div>`;
+
   // ---------- Vistas ----------
   function vistaHoy() {
     const f = UI.fecha;
@@ -125,15 +128,8 @@
 
     const sched = D.horario.map((h) => `<div><span class="t">${h.hora}</span><span class="c" style="background:${tipoColor[h.tipo]}"></span><span><b>${esc(h.titulo)}</b> <span class="muted">· ${esc(h.detalle)}</span></span></div>`).join('');
 
-    return `${hello}${hero}
-      <div class="section" style="margin-top:18px">
-        <div class="section-title"><h2>Checklist</h2><span>${hechos(c)}/${D.habitos.length}</span></div>
-        <div class="group">${items}
-          <div class="row"><span class="box" style="border-style:dashed"></span><span class="grow"><b>Energía</b><span class="sub">Del 1 al 5, ¿cómo te sentiste hoy?</span></span></div>
-          <div class="scale-row"><div class="scale">${energia}</div></div>
-        </div>
-      </div>
-      <div class="section">
+    return cols(`<div style="order:1">${hello}</div><div style="order:2;margin-bottom:18px">${hero}</div>
+      <div class="section" style="order:4">
         <div class="section-title"><h2>Comidas</h2><span>${DIAS[d]}</span></div>
         <div class="group">
         ${comida('Desayuno', desayunoDe(f))}
@@ -141,11 +137,18 @@
         ${comida(m.cena === 'mealprep' ? 'Preparación' : 'Cena', m.cena)}
         </div>
       </div>
-      <div class="section">
+      <div class="section" style="order:5">
         <div class="section-title"><h2>Entreno</h2></div>
         ${entreno}
       </div>
-      <details class="card"><summary>Cómo se ve el día ${icon.chev}</summary><div class="sched">${sched}</div></details>`;
+      <details class="card" style="order:6"><summary>Cómo se ve el día ${icon.chev}</summary><div class="sched">${sched}</div></details>`,
+      `<div class="section" style="order:3">
+        <div class="section-title"><h2>Checklist</h2><span>${hechos(c)}/${D.habitos.length}</span></div>
+        <div class="group">${items}
+          <div class="row"><span class="box" style="border-style:dashed"></span><span class="grow"><b>Energía</b><span class="sub">Del 1 al 5, ¿cómo te sentiste hoy?</span></span></div>
+          <div class="scale-row"><div class="scale">${energia}</div></div>
+        </div>
+      </div>`);
   }
 
   function vistaComidas() {
@@ -160,14 +163,14 @@
         <div class="card" style="display:grid;gap:4px"><b>Desayunos</b>
           <button class="meal" data-action="receta" data-id="desayuno-a"><span class="lbl">Día impar</span><span>${esc(D.recetas['desayuno-a'].nombre.split('· ')[1])}</span>${icon.chev}</button>
           <button class="meal" data-action="receta" data-id="desayuno-b"><span class="lbl">Día par</span><span>${esc(D.recetas['desayuno-b'].nombre.split('· ')[1])}</span>${icon.chev}</button></div>` +
-        ORDEN_SEMANA.map((d) => {
+        '<div class="days-grid">' + ORDEN_SEMANA.map((d) => {
           const m = D.menu[d];
           return `<div class="card day ${d === hd ? 'today-mark' : ''}">
             <div class="day-head"><h3>${DIAS[d]}</h3>${d === hd ? '<span class="tag green">Hoy</span>' : ''}</div>
             <button class="meal" data-action="receta" data-id="${m.almuerzo}"><span class="lbl">Almuerzo</span><span>${esc(D.recetas[m.almuerzo].nombre)}</span>${icon.chev}</button>
             <button class="meal" data-action="receta" data-id="${m.cena}"><span class="lbl">${m.cena === 'mealprep' ? 'Prep' : 'Cena'}</span><span>${esc(D.recetas[m.cena].nombre)}</span>${icon.chev}</button>
           </div>`;
-        }).join('');
+        }).join('') + '</div>';
     } else {
       const grupos = {};
       Object.entries(D.recetas).forEach(([id, r]) => { (grupos[r.tipo] = grupos[r.tipo] || []).push([id, r]); });
@@ -191,24 +194,26 @@
     const F = D.fuerza;
     const w = semana2() ? 45 : 40, r = 60 - w;
     const ej = F.ejercicios.map((e, i) => `<div class="row"><span class="tag">${i + 1}</span><span class="grow"><b>${esc(e.nombre)}</b><span class="sub">${esc(e.tip)}</span></span></div>`).join('');
+    const hd = parse(hoy()).getDay();
     const sem = ORDEN_SEMANA.map((d) => {
       const e = D.entreno[d];
-      const t = e === 'fuerza' ? '<span class="tag green">Fuerza</span>' : e === 'correr' ? '<span class="tag orange">Correr</span>' : '<span class="tag">Libre</span>';
-      return `<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span class="small muted">${DIAS_CORTOS[d]}</span>${t}</div>`;
+      const letra = e === 'fuerza' ? 'F' : e === 'correr' ? 'C' : '–';
+      const nombre = e === 'fuerza' ? 'Fuerza' : e === 'correr' ? 'Correr' : 'Libre';
+      return `<div class="wk-day ${d === hd ? 'is-today' : ''}"><span class="wk-lbl">${DIAS_CORTOS[d][0]}</span><span class="wk-dot ${e}" title="${nombre}" aria-label="${DIAS[d]}: ${nombre}">${letra}</span></div>`;
     }).join('');
-    return `<div class="section"><div class="section-title"><h2>La semana</h2></div>
-        <div class="card" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;overflow-x:auto">${sem}</div></div>
-      <div class="section">
+    const semana = `<div class="section"><div class="section-title"><h2>La semana</h2></div>
+        <div class="card"><div class="wk">${sem}</div>
+          <div class="wk-legend"><span><i class="wk-dot fuerza">F</i>Fuerza</span><span><i class="wk-dot correr">C</i>Correr</span><span><i class="wk-dot libre">–</i>Libre</span></div></div></div>`;
+    return cols(semana + `<div class="section">
         <div class="section-title"><h2>Fuerza · 15 min</h2><span>${w}/${r} s</span></div>
         <div class="card"><b>Cómo es</b><p class="muted" style="margin-top:4px">2 min de ${esc(F.calentamiento.nombre.toLowerCase())} → ${F.vueltas} vueltas de los 6 ejercicios (${w} s de trabajo, ${r} s de descanso) → 30 s de plancha y 30 s de soga.</p></div>
         <div class="group">${ej}</div>
         <p class="muted small" style="padding:0 6px">${esc(F.progresion)}</p>
         <button class="btn green" data-action="startTimer">Empezar circuito con timer</button>
-      </div>
-      <div class="section">
+      </div>`, `<div class="section">
         <div class="section-title"><h2>Correr · ${esc(D.correr.duracion)}</h2></div>
         <div class="group flat">${D.correr.tips.map((t) => `<div class="row"><span class="grow"><span style="font-size:16px">${esc(t)}</span></span></div>`).join('')}</div>
-      </div>`;
+      </div>`);
   }
 
   function vistaSuper() {
@@ -226,7 +231,7 @@
         <div class="section-title"><h2>Lista del súper</h2><span>${marcados}/${total}</span></div>
         <p class="muted small">Una semana, para dos. Tildá lo que ya tienen en casa o lo que ya está en el carrito.</p>
         <form class="add" data-form="addItem"><input name="item" placeholder="Agregar algo…" aria-label="Agregar a la lista" autocomplete="off"><button class="btn" type="submit">Agregar</button></form>
-        ${cats}${extras}
+        <div class="super-grid">${cats}${extras}</div>
         <button class="btn ghost" data-action="superReset">${UI.superConfirm ? 'Tocá de nuevo para confirmar' : 'Desmarcar todo (nueva semana)'}</button>
       </div>`;
   }
@@ -257,7 +262,7 @@
     const habitos = D.habitos.map((h, i) => `<div class="row"><span class="tag green">${i + 1}</span><span class="grow"><b>${esc(h.titulo)}</b><span class="sub">${esc(h.detalle)}</span></span></div>`).join('');
     const nombre = D.usuarios.find((x) => x.id === u).nombre;
 
-    return `<div class="card dark" style="display:flex;flex-direction:column;gap:8px;margin-bottom:22px">
+    return cols(`<div class="card dark" style="display:flex;flex-direction:column;gap:8px;margin-bottom:22px">
         <span class="eyebrow"><em style="font-size:20px;color:var(--ink)">el objetivo</em></span><h2 style="font-size:28px">${esc(D.objetivo.titulo)}</h2>
         <p class="muted">${esc(D.objetivo.texto)}</p><p><b>Meta:</b> ${esc(D.objetivo.meta)}</p></div>
       <div class="section"><div class="section-title"><h2>Los 14 días</h2></div><div class="card">${grid}</div></div>
@@ -275,12 +280,12 @@
           ${ratio ? `<p class="small">Cintura / altura: <b>${ratio}</b> ${ratio < 0.5 ? '· por debajo de 0,5 ✓' : '· la meta es menos de 0,5'}</p>` : ''}
         </div>
       </div>
-      <div class="section"><div class="section-title"><h2>Los 7 hábitos</h2></div><div class="group">${habitos}</div></div>
+`, `<div class="section"><div class="section-title"><h2>Los 7 hábitos</h2></div><div class="group">${habitos}</div></div>
       <div class="section"><div class="section-title"><h2>Ajustes</h2></div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px">
           <div class="field"><label for="startEdit">Fecha del día 1</label><input id="startEdit" type="date" value="${S.start || ''}" data-action-change="startEdit"></div>
-          <p class="muted small">Todo se guarda en este teléfono. Cada uno puede usar la app en el suyo.</p>
-        </div></div>`;
+          <p class="muted small">Todo se guarda en este dispositivo. Cada uno puede usar la app en el suyo.</p>
+        </div></div>`);
   }
 
   // ---------- Receta ----------
@@ -403,7 +408,7 @@
     const ini = D.usuarios.find((u) => u.id === S.user).nombre[0];
     $('#app').innerHTML = `<header class="top"><div class="users" role="group" aria-label="Quién usa la app">${users}</div><div class="avatar" aria-hidden="true">${esc(ini)}</div></header>
       <main>${vistas[S.tab]()}</main>`;
-    $('#nav').innerHTML = `<div class="nav-in">${TABS.map(([id, l]) => `<button data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}>${icon[id]}<span>${l}</span></button>`).join('')}</div>`;
+    $('#nav').innerHTML = `<div class="nav-in"><div class="brand">rutina <em>semanal</em></div>${TABS.map(([id, l]) => `<button data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}>${icon[id]}<span>${l}</span></button>`).join('')}</div>`;
   }
 
   // ---------- Eventos ----------
