@@ -67,6 +67,7 @@ function connect() {
 
 function err(e) {
   console.warn('sync', e);
+  APP.syncError = e && (e.code || e.message) ? String(e.code || e.message) : '';
   setStatus(e && e.code === 'permission-denied' ? 'denegado' : 'error');
 }
 

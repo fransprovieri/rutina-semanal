@@ -330,6 +330,7 @@
         <button class="btn ghost" data-action="syncUnir">Conectar</button>`;
     } else {
       body = `<div class="kv"><span>Estado</span><span>${esc(estados[st] || st)}</span></div>
+        ${(st === 'error' || st === 'denegado') && window.APP.syncError ? `<p class="muted small">Detalle: ${esc(window.APP.syncError)}</p>` : ''}
         <div class="field"><label>Código (compartilo solo con Jazmín)</label><input readonly value="${esc(S.syncCode)}" onclick="this.select()"></div>
         <div class="btn-row"><button class="btn" data-action="syncCopiar">Copiar código</button><button class="btn ghost" data-action="syncSalir">Desconectar</button></div>`;
     }
