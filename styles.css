@@ -306,3 +306,16 @@ details.card[open] summary { margin-bottom: 14px; }
   .nav-in { grid-template-columns: 1fr 1.05fr 1.45fr 0.9fr 1.05fr; }
   .nav button span { font-size: 10px; letter-spacing: -0.1px; }
 }
+
+/* Tema rosa cuando la app está en Jazmín */
+html.tema-jaz { background: #C98DB0; }
+.tema-jaz .sky { background: linear-gradient(180deg, #A0638C 0%, #D49ABF 45%, #F1D2E2 100%); }
+.tema-jaz .sky::before { filter: blur(28px) saturate(60%) hue-rotate(115deg) brightness(1.15); }
+.tema-jaz .sky-2 { filter: blur(14px) saturate(45%) hue-rotate(115deg) brightness(1.15); }
+.tema-jaz .sky::after { background: linear-gradient(180deg, rgba(95, 40, 80, 0.22) 0%, rgba(255, 255, 255, 0.06) 45%, rgba(215, 190, 205, 0.25) 100%); }
+.tema-jaz .card, .tema-jaz .group { background: rgba(252, 238, 246, 0.62); }
+.tema-jaz .card.dark { background: rgba(254, 244, 250, 0.86); }
+@media (min-width: 900px) {
+  .tema-jaz .sky::before { filter: blur(80px) saturate(60%) hue-rotate(115deg) brightness(1.15); }
+  .tema-jaz .sky-2 { filter: blur(45px) saturate(45%) hue-rotate(115deg) brightness(1.15); }
+}

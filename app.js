@@ -551,6 +551,8 @@
   // ---------- Render ----------
   const TABS = [['hoy', 'Hoy'], ['comidas', 'Comidas'], ['entreno', 'Entrenamiento'], ['super', 'Súper'], ['progreso', 'Progreso']];
   function render() {
+    document.documentElement.classList.toggle('tema-jaz', S.user === 'jazmin');
+    const tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute('content', S.user === 'jazmin' ? '#A0638C' : '#33608F');
     const vistas = { hoy: vistaHoy, comidas: vistaComidas, entreno: vistaEntreno, super: vistaSuper, progreso: vistaProgreso };
     const users = D.usuarios.map((u) => `<button data-action="user" data-id="${u.id}" aria-pressed="${S.user === u.id}">${esc(u.nombre)}</button>`).join('');
     const ini = D.usuarios.find((u) => u.id === S.user).nombre[0];
