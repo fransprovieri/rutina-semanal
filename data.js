@@ -43,7 +43,7 @@ window.DATA = {
     2: { almuerzo: 'wrap', cena: 'merluza' },
     3: { almuerzo: 'bowl', cena: 'cerdo' },
     4: { almuerzo: 'cerdo-sobra', cena: 'milanesas' },
-    5: { almuerzo: 'wrap-sobra', cena: 'bolognesa' },
+    5: { almuerzo: 'milanesa-sobra', cena: 'bolognesa' },
     6: { almuerzo: 'tortilla', cena: 'hamburguesas' },
     0: { almuerzo: 'libre', cena: 'mealprep' }
   },
@@ -78,7 +78,7 @@ window.DATA = {
       foto: { img: 'https://images.unsplash.com/photo-1543353071-c953d88f7033?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'sosOqjx31Go', autor: 'Ella Olsson' },
       nombre: 'Meal prep del domingo',
       tipo: 'Preparación', tiempo: '1 h 15 min',
-      intro: 'Deja listos los almuerzos de lunes a miércoles y los huevos de los desayunos. Todo entra en la heladera hasta el miércoles.',
+      intro: 'Deja listos los almuerzos de lunes a miércoles (bowl, wrap, bowl) y los huevos de los desayunos. Jueves y viernes se resuelven con lo que se cocina de más en la cena anterior: nadie cocina al mediodía.',
       ingredientes: [
         '1 kg de pollo (pechuga o muslo deshuesado)',
         '400 g de arroz (crudo)',
@@ -88,6 +88,7 @@ window.DATA = {
         '2 morrones',
         '2 papas o 1 batata (la parte de carbo de la bandeja)',
         '6 huevos',
+        '300 g de carne picada, 1 cebolla, 1 morrón y 1 zanahoria (relleno de los wraps del martes)',
         'Aceite de oliva, sal, pimienta, pimentón dulce, orégano, ajo, 1 limón'
       ],
       pasos: [
@@ -100,8 +101,9 @@ window.DATA = {
         '0:35 · Dá vuelta las verduras.',
         '0:45 · Pollo listo cuando el jugo sale transparente (unos 30–35 min). Sacalo y dejalo reposar 5 min antes de cortar en tiras.',
         '0:50 · Verduras listas cuando están doradas y blandas. Si falta, 10 min más.',
-        '1:00 · Dejá enfriar todo y guardalo en tuppers separados: pollo, arroz, verduras, huevos con cáscara.',
-        'Guardado: hasta 3–4 días en la heladera. El pollo que no se use el miércoles, al freezer.'
+        '0:40 · Relleno de wraps: en sartén, cebolla y morrón picados 5 min, sumá la carne picada y la zanahoria rallada, 8–10 min. Sal y pimentón.',
+        '1:00 · Dejá enfriar todo y armá los tuppers: 4 bowls (lunes y miércoles, dos por día), 1 tupper con el relleno de los wraps (martes) y los huevos con cáscara.',
+        'Guardado: todo aguanta 3–4 días en la heladera, justo hasta el miércoles. Si algún bowl no se come, al freezer.'
       ]
     },
     bowl: {
@@ -129,25 +131,16 @@ window.DATA = {
       ]
     },
     wrap: {
-      foto: { img: 'https://images.unsplash.com/photo-1719282431723-9d0f4370d4bc?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'xq04aTV-LVk', autor: 'Bayuaji Abiyu' },
       nombre: 'Wraps de carne picada',
-      tipo: 'Almuerzo', tiempo: '20 min',
-      intro: 'Hacé el relleno para dos días: la mitad hoy, la otra mitad se guarda para el viernes.',
-      ingredientes: ['600 g de carne picada magra', '1 cebolla', '1 morrón', '1 zanahoria rallada', '8 tortillas (4 hoy, 4 el viernes)', '150 g de queso cremoso', 'Lechuga y tomate', 'Pimentón dulce, comino (opcional), sal'],
-      pasos: [
-        'Picá la cebolla y el morrón chico. Rallá la zanahoria (no se nota y suma verdura).',
-        'Sartén con un poco de aceite: cebolla y morrón 5 min.',
-        'Sumá la carne, desarmala con cuchara y cociná 8–10 min hasta que se dore. Agregá la zanahoria, pimentón y sal.',
-        'Separá la mitad en un tupper para el viernes.',
-        'Calentá las tortillas en sartén seca 20 s por lado. Rellená con carne, un poco de queso, lechuga y tomate. Enrollá y a comer.'
-      ]
-    },
-    'wrap-sobra': {
+      tipo: 'Almuerzo', tiempo: '5 min (relleno del domingo)',
       foto: { img: 'https://images.unsplash.com/photo-1719282431723-9d0f4370d4bc?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'xq04aTV-LVk', autor: 'Bayuaji Abiyu' },
-      nombre: 'Wraps de carne picada (relleno del martes)',
-      tipo: 'Almuerzo', tiempo: '5 min',
-      ingredientes: ['Relleno guardado del martes', '4 tortillas', 'Queso, lechuga y tomate'],
-      pasos: ['Calentá el relleno en sartén o microondas.', 'Tortillas 20 s por lado en sartén seca.', 'Armá y enrollá igual que el martes.']
+      intro: 'El relleno ya está hecho del domingo. Si se lleva, se puede comer frío o armarlo a la mañana.',
+      ingredientes: ['Relleno de carne del meal prep', '4 tortillas', '100 g de queso cremoso', 'Lechuga y tomate'],
+      pasos: [
+        'Calentá el relleno 1–2 min en microondas (o comelo frío si se lleva).',
+        'Tortillas 20 s por lado en sartén seca o 15 s en microondas.',
+        'Rellená con carne, queso, lechuga y tomate. Enrollá apretado; envuelto en papel aluminio viaja bien.'
+      ]
     },
     merluza: {
       foto: { img: 'https://images.unsplash.com/photo-1793691279531-f4a9873169d5?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'gJCJreBH0kM', autor: 'Murat Ts.' },
@@ -186,15 +179,22 @@ window.DATA = {
     milanesas: {
       nombre: 'Milanesas de pollo al horno con puré mixto',
       tipo: 'Cena', tiempo: '40 min',
-      ingredientes: ['600 g de pechuga de pollo', '2 huevos', 'Pan rallado (1 taza)', 'Ajo, perejil, sal', '2 papas', '½ calabaza', 'Manteca, sal, nuez moscada', '2 tomates'],
+      intro: 'Hacé el doble: la mitad de las milanesas es el almuerzo del viernes.',
+      ingredientes: ['1,2 kg de pechuga de pollo (la mitad para el viernes)', '4 huevos', 'Pan rallado (2 tazas)', 'Ajo, perejil, sal', '2 papas', '½ calabaza', 'Manteca, sal, nuez moscada', '2 tomates'],
       pasos: [
         'Horno a 200 °C. Fuente con un poco de aceite.',
         'Cortá las pechugas en filetes finos (o pedilas fileteadas en la carnicería).',
         'Batí los huevos con ajo, perejil y sal. Pasá cada filete por huevo y después por pan rallado.',
         'Al horno 10 min, dá vuelta y 8–10 min más hasta que estén doradas.',
         'Mientras tanto: papa y calabaza en cubos, hervidas juntas 15 min. Pisá con manteca, sal y nuez moscada.',
-        'Servilas con tomate en rodajas.'
+        'Servilas con tomate en rodajas. Guardá la mitad de las milanesas y del puré en tuppers para mañana.'
       ]
+    },
+    'milanesa-sobra': {
+      nombre: 'Milanesas con puré (lo del jueves)',
+      tipo: 'Almuerzo', tiempo: '3 min',
+      ingredientes: ['Milanesas y puré guardados del jueves', 'Tomate'],
+      pasos: ['Calentá 2 min en microondas, o la milanesa fría en un sándwich o wrap con tomate si se lleva.', 'Regla del plato: sumá tomate si falta verdura.']
     },
     bolognesa: {
       foto: { img: 'https://images.unsplash.com/photo-1622973536968-3ead9e780960?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'sA3wymYqyaI', autor: 'Homescreenify' },
@@ -271,10 +271,10 @@ window.DATA = {
   },
 
   super: [
-    { cat: 'Proteínas', items: ['Pollo (pechuga o muslo deshuesado) · 1,6 kg', 'Carne picada magra · 1,3 kg', 'Bife (nalga, cuadril o bife de chorizo) · 500 g', 'Lomo de cerdo · 800 g', 'Merluza en filet · 500 g', 'Huevos · 1 maple de 30', 'Lentejas · 1 paquete chico o 2 latas'] },
+    { cat: 'Proteínas', items: ['Pollo: 1 kg para el meal prep + 1,2 kg de pechuga para milanesas', 'Carne picada magra · 1 kg', 'Bife (nalga, cuadril o bife de chorizo) · 500 g', 'Lomo de cerdo · 800 g', 'Merluza en filet · 500 g', 'Huevos · 1 maple de 30', 'Lentejas · 1 paquete chico o 2 latas'] },
     { cat: 'Lácteos', items: ['Yogur natural sin azúcar · 8 potes', 'Queso cremoso o de barra · 400 g', 'Manteca', 'Queso rallado'] },
-    { cat: 'Carbohidratos', items: ['Arroz · 1 kg', 'Papa · 1,5 kg', 'Batata · 1 kg', 'Fideos · 500 g', 'Tortillas para wraps · 8', 'Pan rallado'] },
+    { cat: 'Carbohidratos', items: ['Arroz · 1 kg', 'Papa · 1,5 kg', 'Batata · 1 kg', 'Fideos · 500 g', 'Tortillas para wraps · 8', 'Pan rallado · 2 tazas'] },
     { cat: 'Verduras', items: ['Calabaza o zapallo anco · 2', 'Zanahoria · 1 kg', 'Cebolla · 1,5 kg', 'Morrón · 4', 'Zapallitos · 1 kg', 'Brócoli · 2', 'Espinaca · 1 atado o bolsa congelada', 'Tomate · 1 kg', 'Lechuga · 1', 'Ajo', 'Limones · 2'] },
-    { cat: 'Despensa', items: ['Puré de tomate · 2 cajas', 'Aceite de oliva', 'Sal y pimienta', 'Orégano y pimentón dulce', 'Mostaza', 'Nuez moscada', 'Yerba y café', 'Dulce de arándanos'] }
+    { cat: 'Despensa', items: ['Tuppers para 4 bowls + papel aluminio', 'Puré de tomate · 2 cajas', 'Aceite de oliva', 'Sal y pimienta', 'Orégano y pimentón dulce', 'Mostaza', 'Nuez moscada', 'Yerba y café', 'Dulce de arándanos'] }
   ]
 };
