@@ -66,10 +66,9 @@ window.DATA = {
     { titulo: 'Freezer · proteínas', dura: 'hasta 3 meses', items: [
       'Tiras de pollo en bolsas de 300 g (salteado, fajitas)',
       'Pechugas fileteadas en bolsas de 300 g (pollo a la plancha)',
-      'Milanesas ya empanadas, crudas, separadas con film',
+      'Milanesas de pollo y de merluza, separadas con film',
       'Bifes en bolsas de 300 g · tiras de carne para salteado',
-      'Cubos de pollo en bolsas de 200 g (fideos con brócoli)',
-      'Merluza en filetes'
+      'Cubos de pollo en bolsas de 200 g (fideos con brócoli)'
     ] },
     { titulo: 'Freezer · verduras', dura: 'hasta 2 meses', items: [
       'Mix para salteado: cebolla, morrón, zanahoria y zapallito en tiras',
@@ -179,10 +178,9 @@ window.DATA = {
     milanesas: {
       nombre: 'Milanesas de pollo al horno con puré',
       tipo: 'Almuerzo', tiempo: '40 min en tanda',
-      intro: 'Empanalas el domingo y congelalas crudas: van del freezer al horno sin descongelar (sumá 5 min).',
-      ingredientes: ['800 g de pechuga fileteada', '3 huevos', 'Pan rallado (2 tazas)', 'Ajo, perejil, sal', '2 papas y ½ calabaza para el puré', 'Manteca, nuez moscada'],
+      intro: 'Con milanesas ya empanadas de la carnicería: van del freezer al horno sin descongelar (sumá 5 min).',
+      ingredientes: ['800 g de milanesas de pollo', '2 papas y ½ calabaza para el puré', 'Manteca, nuez moscada, sal'],
       pasos: [
-        'Batí los huevos con ajo, perejil y sal. Pasá cada filete por huevo y por pan rallado.',
         'Horno a 200 °C en fuente aceitada: 10 min, vuelta y 8–10 min más.',
         'Puré: papa y calabaza en cubos, hervidas 15 min, pisadas con manteca, sal y nuez moscada.',
         'Porcioná milanesa + puré en tuppers. Fría también va bien en un sándwich con tomate.'
@@ -263,13 +261,13 @@ window.DATA = {
     },
     merluza: {
       foto: { img: 'https://images.unsplash.com/photo-1793691279531-f4a9873169d5?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'gJCJreBH0kM', autor: 'Murat Ts.' },
-      nombre: 'Merluza al horno con papas y zapallitos',
+      nombre: 'Milanesas de merluza al horno con papas y zapallitos',
       tipo: 'Cena', tiempo: '30 min',
-      ingredientes: ['500 g de filet de merluza (puede ir congelado)', '2 papas', '2 zapallitos', '1 limón, ajo, perejil, aceite, sal'],
+      ingredientes: ['500 g de milanesas de merluza (pueden ir congeladas)', '2 papas', '2 zapallitos', '1 limón, aceite, sal'],
       pasos: [
         'Horno a 200 °C. Papas en rodajas finas con aceite y sal: 15 min solas.',
-        'Sumá zapallitos en medias lunas y los filetes arriba, con ajo, limón, aceite y sal.',
-        '12–15 min más (18 si el pescado iba congelado), hasta que se separe en lascas.'
+        'Sumá los zapallitos en medias lunas y las milanesas en una fuente aceitada al lado.',
+        'Milanesas 8 min, vuelta y 8 min más (unos minutos extra si iban congeladas). Limón al servir.'
       ]
     },
     salteado: {
@@ -349,9 +347,9 @@ window.DATA = {
   },
 
   super: [
-    { cat: 'Proteínas', items: ['Pollo (pechuga y muslo) · 2,5 kg — bowls, milanesas y cenas', 'Carne picada magra · 1,2 kg — wraps, pastel y bolognesa', 'Bife o carne para tiras · 800 g', 'Lomo de cerdo · 600 g', 'Merluza en filet · 500 g', 'Huevos · 1 maple de 30', 'Lentejas · 1 lata', 'Porotos · 1 lata'] },
+    { cat: 'Proteínas', items: ['Pechuga de pollo · 1,7 kg — bowls y cenas', 'Milanesas de pollo ya empanadas · 800 g', 'Carne picada magra · 1,2 kg — wraps, pastel y bolognesa', 'Bife o carne para tiras · 800 g', 'Lomo de cerdo · 600 g', 'Milanesas de merluza · 500 g', 'Huevos · 1 maple de 30', 'Lentejas · 1 lata', 'Porotos · 1 lata'] },
     { cat: 'Lácteos', items: ['Yogur natural sin azúcar · 8 potes', 'Queso cremoso o de barra · 500 g', 'Queso rallado', 'Manteca'] },
-    { cat: 'Carbohidratos', items: ['Arroz · 1 kg', 'Papa · 2 kg', 'Batata · 1 kg', 'Fideos · 1 kg (largos y cortos)', 'Tortillas · 16', 'Tapas de tarta · 1 paquete', 'Pan rallado · 2 tazas', 'Choclo · 1 lata (platitos)'] },
+    { cat: 'Carbohidratos', items: ['Arroz · 1 kg', 'Papa · 2 kg', 'Batata · 1 kg', 'Fideos · 1 kg (largos y cortos)', 'Tortillas · 16', 'Tapas de tarta · 1 paquete', 'Choclo · 1 lata (platitos)'] },
     { cat: 'Verduras', items: ['Calabaza o zapallo anco · 2', 'Zanahoria · 1,5 kg', 'Cebolla · 2 kg', 'Morrón · 5', 'Zapallitos · 1 kg', 'Brócoli · 3', 'Acelga · 2 atados (ya tienen)', 'Tomate · 1 kg', 'Tomates cherry · 2 bandejas', 'Lechuga · 1', 'Palta · 3', 'Ajo', 'Limones · 3'] },
     { cat: 'Despensa', items: ['Bolsas tipo zip para freezer', 'Tuppers individuales · 8–10', 'Film y papel aluminio', 'Puré de tomate · 1 caja', 'Salsa de soja', 'Mostaza', 'Aceite de oliva', 'Sal, pimienta, orégano, pimentón dulce, nuez moscada', 'Yerba, café y dulce de arándanos'] }
   ]
