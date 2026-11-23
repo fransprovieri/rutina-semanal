@@ -6,10 +6,32 @@
   const ORDEN_SEMANA = [1, 2, 3, 4, 5, 6, 0];
 
   // ---------- Estado ----------
-  const defaults = () => ({ user: 'fran', start: null, checks: {}, medidas: {}, super: {}, extras: [], tab: 'hoy' });
+  const defaults = () => ({ user: 'fran', start: null, checks: {}, medidas: {}, super: {}, extras: [], tab: 'hoy', syncCode: null });
   let S;
   try { S = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { S = defaults(); }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* sin almacenamiento */ } };
+
+  // ---------- Sincronización (ver sync.js) ----------
+  let pendingRender = false;
+  window.APP = {
+    get state() { return S; },
+    queue: [],
+    syncStatus: 'sin-config',
+    saveLocal: () => save(),
+    rerender: () => {
+      const a = document.activeElement;
+      if (a && a.tagName === 'INPUT' && document.getElementById('app').contains(a)) { pendingRender = true; return; }
+      render();
+    }
+  };
+  document.addEventListener('focusout', () => { if (pendingRender) { pendingRender = false; setTimeout(render, 0); } });
+  const push = (path, value) => { window.APP.queue.push([path, value]); if (window.SYNC) window.SYNC.flush(); };
+  const pushTodo = () => ['start', 'checks', 'medidas', 'super', 'extras'].forEach((k) => push([k], S[k]));
+  const nuevoCodigo = () => {
+    const abc = 'abcdefghjkmnpqrstuvwxyz23456789';
+    const r = crypto.getRandomValues(new Uint8Array(20));
+    return Array.from(r, (x) => abc[x % abc.length]).join('').match(/.{4}/g).join('-');
+  };
 
   // UI temporal (no se guarda)
   const UI = { fecha: null, comidasVista: 'semana', recetaPasos: {}, superConfirm: false };
@@ -284,14 +306,34 @@
         </div>
       </div>
 `, `<div class="section"><div class="section-title"><h2>Los 7 hábitos</h2></div><div class="group">${habitos}</div></div>
+      ${vistaSync()}
       <div class="section"><div class="section-title"><h2>Ajustes</h2></div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px">
           <div class="field"><label for="startEdit">Fecha del día 1</label><input id="startEdit" type="date" value="${S.start || ''}" data-action-change="startEdit"></div>
-          <p class="muted small">Todo se guarda en este dispositivo. Las actualizaciones de la app no lo borran; lo único que lo borra es eliminar el ícono de inicio o los datos de Safari.</p>
+          <p class="muted small">Además de la nube, todo queda guardado en este dispositivo. Las actualizaciones de la app no lo borran.</p>
           <p class="muted small">Foto del fondo: <a href="https://unsplash.com/photos/WVtzXcZbGpI" target="_blank" rel="noopener" style="color:inherit">yujeong Huh en Unsplash</a>.</p>
           <div class="btn-row"><button class="btn ghost" data-action="exportar">Guardar copia</button>
             <label class="btn ghost" style="display:flex;align-items:center;justify-content:center;cursor:pointer">Restaurar copia<input type="file" accept="application/json,.json" data-import hidden></label></div>
         </div></div>`);
+  }
+
+  function vistaSync() {
+    const st = window.APP.syncStatus;
+    const estados = { ok: 'Sincronizado', offline: 'Sin conexión: se sube cuando vuelva internet', conectando: 'Conectando…', error: 'Error al sincronizar', denegado: 'Firebase rechazó el acceso: revisá las reglas', 'sin-codigo': '', 'sin-config': '' };
+    let body;
+    if (st === 'sin-config') {
+      body = '<p class="muted small">Falta conectar Firebase. Cuando esté, acá vas a poder compartir los datos con Jazmín y entre tus dispositivos.</p>';
+    } else if (!S.syncCode) {
+      body = `<p class="muted small">Creá un código en un dispositivo y pegalo en los demás (y en el teléfono de Jazmín). Todos los que tengan el mismo código ven lo mismo.</p>
+        <button class="btn" data-action="syncNuevo">Crear código nuevo</button>
+        <div class="field"><label for="syncInput">O pegá un código que ya tengan</label><input id="syncInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="xxxx-xxxx-xxxx-xxxx-xxxx"></div>
+        <button class="btn ghost" data-action="syncUnir">Conectar</button>`;
+    } else {
+      body = `<div class="kv"><span>Estado</span><span>${esc(estados[st] || st)}</span></div>
+        <div class="field"><label>Código (compartilo solo con Jazmín)</label><input readonly value="${esc(S.syncCode)}" onclick="this.select()"></div>
+        <div class="btn-row"><button class="btn" data-action="syncCopiar">Copiar código</button><button class="btn ghost" data-action="syncSalir">Desconectar</button></div>`;
+    }
+    return `<div class="section"><div class="section-title"><h2>Sincronizar</h2></div><div class="card" style="display:flex;flex-direction:column;gap:12px">${body}</div></div>`;
   }
 
   // ---------- Receta ----------
@@ -395,7 +437,7 @@
     T.el.remove(); T = null;
     document.body.style.overflow = '';
     if (completo) {
-      userChecks(S.user, hoy()).entreno = true; save();
+      const cd = userChecks(S.user, hoy()); cd.entreno = true; push(['checks', S.user, hoy()], cd); save();
       beep(990, 0.3); setTimeout(() => beep(1320, 0.4), 250);
       toast('¡Circuito completo! Entreno tildado.');
       render();
@@ -428,18 +470,26 @@
     if (!el || el.closest('.sheet') || el.closest('.timer')) return;
     const a = el.dataset.action;
     if (a === 'user') { S.user = el.dataset.id; }
-    else if (a === 'setStart') { S.start = $('#startInput').value || hoy(); UI.fecha = hoy(); toast('¡Arrancó el desafío!'); }
+    else if (a === 'setStart') { S.start = $('#startInput').value || hoy(); UI.fecha = hoy(); push(['start'], S.start); toast('¡Arrancó el desafío!'); }
     else if (a === 'prevDay') { UI.fecha = addDays(UI.fecha, -1); }
     else if (a === 'nextDay') { UI.fecha = addDays(UI.fecha, 1); }
     else if (a === 'goToday') { UI.fecha = hoy(); }
     else if (a === 'goDate') { UI.fecha = el.dataset.date; S.tab = 'hoy'; window.scrollTo(0, 0); }
-    else if (a === 'toggle') { const c = userChecks(S.user, UI.fecha); c[el.dataset.id] = !c[el.dataset.id]; }
-    else if (a === 'energia') { const c = userChecks(S.user, UI.fecha); const v = Number(el.dataset.v); c.energia = c.energia === v ? undefined : v; }
+    else if (a === 'toggle') { const c = userChecks(S.user, UI.fecha); c[el.dataset.id] = !c[el.dataset.id]; push(['checks', S.user, UI.fecha], c); }
+    else if (a === 'energia') { const c = userChecks(S.user, UI.fecha); const v = Number(el.dataset.v); c.energia = c.energia === v ? null : v; push(['checks', S.user, UI.fecha], c); }
     else if (a === 'receta') { return abrirReceta(el.dataset.id); }
     else if (a === 'startTimer') { return startTimer(); }
     else if (a === 'cv') { UI.comidasVista = el.dataset.v; }
-    else if (a === 'superToggle') { S.super[el.dataset.key] = !S.super[el.dataset.key]; }
-    else if (a === 'superDel') { const k = el.dataset.key; S.extras = S.extras.filter((t) => 'extra|' + t !== k); delete S.super[k]; }
+    else if (a === 'superToggle') { S.super[el.dataset.key] = !S.super[el.dataset.key]; push(['super', el.dataset.key], S.super[el.dataset.key]); }
+    else if (a === 'superDel') { const k = el.dataset.key; S.extras = S.extras.filter((t) => 'extra|' + t !== k); S.super[k] = false; push(['extras'], S.extras); push(['super', k], false); }
+    else if (a === 'syncNuevo') { S.syncCode = nuevoCodigo(); save(); if (window.SYNC) window.SYNC.connect(); }
+    else if (a === 'syncUnir') {
+      const v = ($('#syncInput').value || '').trim().toLowerCase().replace(/\s+/g, '');
+      if (v.length < 16) { toast('Ese código es muy corto'); return; }
+      S.syncCode = v; save(); if (window.SYNC) window.SYNC.connect();
+    }
+    else if (a === 'syncCopiar') { try { navigator.clipboard.writeText(S.syncCode); toast('Código copiado'); } catch (e) { /* nada */ } return; }
+    else if (a === 'syncSalir') { S.syncCode = null; save(); if (window.SYNC) window.SYNC.connect(); }
     else if (a === 'exportar') {
       const blob = new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' });
       const file = new File([blob], `rutina-semanal-${hoy()}.json`, { type: 'application/json' });
@@ -449,7 +499,7 @@
     }
     else if (a === 'superReset') {
       if (!UI.superConfirm) { UI.superConfirm = true; setTimeout(() => { UI.superConfirm = false; if (S.tab === 'super') render(); }, 3000); }
-      else { S.super = {}; UI.superConfirm = false; toast('Lista desmarcada'); }
+      else { S.super = {}; UI.superConfirm = false; push(['super'], {}); toast('Lista desmarcada'); }
     }
     else return;
     save(); render();
@@ -457,14 +507,14 @@
 
   document.addEventListener('change', (ev) => {
     const t = ev.target;
-    if (t.dataset.num) { userChecks(S.user, UI.fecha)[t.dataset.num] = Number(t.value) || 0; save(); render(); }
-    else if (t.dataset.med) { (S.medidas[S.user] = S.medidas[S.user] || {})[t.dataset.med] = Number(t.value) || null; save(); render(); }
-    else if (t.dataset.actionChange === 'startEdit') { S.start = t.value || null; save(); render(); }
+    if (t.dataset.num) { const c = userChecks(S.user, UI.fecha); c[t.dataset.num] = Number(t.value) || 0; push(['checks', S.user, UI.fecha], c); save(); render(); }
+    else if (t.dataset.med) { const m = (S.medidas[S.user] = S.medidas[S.user] || {}); m[t.dataset.med] = Number(t.value) || null; push(['medidas', S.user], m); save(); render(); }
+    else if (t.dataset.actionChange === 'startEdit') { S.start = t.value || null; push(['start'], S.start); save(); render(); }
     else if (t.matches('[data-import]') && t.files[0]) {
       t.files[0].text().then((txt) => {
         const d = JSON.parse(txt);
         if (!d || typeof d !== 'object' || !('checks' in d)) throw new Error('formato');
-        S = Object.assign(defaults(), d); save(); render(); toast('Copia restaurada');
+        const code = S.syncCode; S = Object.assign(defaults(), d, { syncCode: code }); pushTodo(); save(); render(); toast('Copia restaurada');
       }).catch(() => toast('Ese archivo no es una copia válida'));
     }
   });
@@ -474,7 +524,7 @@
     if (!f) return;
     ev.preventDefault();
     const v = f.item.value.trim();
-    if (v && !S.extras.includes(v)) { S.extras.push(v); save(); render(); }
+    if (v && !S.extras.includes(v)) { S.extras.push(v); push(['extras'], S.extras); save(); render(); }
   });
 
   document.addEventListener('keydown', (ev) => {
