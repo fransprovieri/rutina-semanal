@@ -95,6 +95,7 @@ window.DATA = {
 
   recetas: {
     mealprep: {
+      foto: { img: 'https://images.unsplash.com/photo-1543353071-c953d88f7033?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'sosOqjx31Go', autor: 'Ella Olsson' },
       nombre: 'Preparación del domingo',
       tipo: 'Preparación', tiempo: '1 h 30 min',
       intro: 'Una sola sesión que deja todo listo para elegir en la semana. No hace falta hacerlo todo: elegí 2 o 3 almuerzos para cocinar en tanda y porcioná el resto para el freezer.',
@@ -127,6 +128,7 @@ window.DATA = {
       ]
     },
     'desayuno-b': {
+      foto: { img: 'https://images.unsplash.com/photo-1468577760773-139c2f1c335f?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'c69HK1HKHYs', autor: 'Jonathan Pielmayer' },
       nombre: 'Tostada con dulce, yogur y huevo duro',
       tipo: 'Desayuno', tiempo: '5 min',
       ingredientes: ['2 rebanadas de pan', 'Manteca y dulce de arándanos', '2 yogures naturales sin azúcar', '2 huevos duros (del domingo)', 'Café o mate'],
@@ -178,6 +180,7 @@ window.DATA = {
       ]
     },
     milanesas: {
+      foto: { img: 'https://images.unsplash.com/photo-1599921841143-819065a55cc6?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'MyfbM2QYF4o', autor: 'Mark König' },
       nombre: 'Milanesas al horno con puré (pollo, ternera o cerdo)',
       tipo: 'Almuerzo', tiempo: '40 min en tanda',
       intro: 'Hay de pollo, de ternera y de cerdo: van del freezer al horno sin descongelar (sumá 5 min). También sirven de cena.',
@@ -189,6 +192,7 @@ window.DATA = {
       ]
     },
     tarta: {
+      foto: { img: 'https://images.unsplash.com/photo-1633205772834-c0b9943c5a54?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: '_RHzESzFTH8', autor: 'Emma Shappley' },
       nombre: 'Tarta de acelga, cebolla y queso',
       tipo: 'Almuerzo', tiempo: '1 h en tanda',
       intro: 'Rinde 6 porciones. 4 días en heladera o freezer en porciones.',
@@ -202,6 +206,7 @@ window.DATA = {
       ]
     },
     pastel: {
+      foto: { img: 'https://images.unsplash.com/photo-1696935257293-9ec4f03074a1?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'LHr6EN-B8NQ', autor: 'The Fry Family Food Co.' },
       nombre: 'Pastel de papa con calabaza',
       tipo: 'Almuerzo', tiempo: '1 h en tanda',
       intro: 'Rinde 5–6 porciones. Se congela muy bien.',
@@ -228,6 +233,7 @@ window.DATA = {
       ]
     },
     platito: {
+      foto: { img: 'https://images.unsplash.com/photo-1544857083-7ac978ef18cb?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: '4wuewdN4YNk', autor: 'Louis Hansel' },
       nombre: 'Platito de Jaz (varias cositas)',
       tipo: 'Almuerzo', tiempo: '5 min con todo listo',
       intro: 'Elegí 4 o 5 cositas de las que quedaron listas el domingo. Con legumbres cuenta como su ensalada de la semana.',
@@ -240,6 +246,7 @@ window.DATA = {
       ]
     },
     'ensalada-fran': {
+      foto: { img: 'https://images.unsplash.com/photo-1720305284322-07b6f099395c?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'y-zLr_3U0Dw', autor: 'Rejoice Denhere' },
       nombre: 'Ensalada simple (para sumar a cualquier almuerzo)',
       tipo: 'Almuerzo', tiempo: '3 min',
       intro: 'Al costado de cualquier almuerzo. Meta: 2 veces por semana.',
@@ -262,6 +269,7 @@ window.DATA = {
       ]
     },
     merluza: {
+      foto: { img: 'https://images.unsplash.com/photo-1599921841143-819065a55cc6?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'MyfbM2QYF4o', autor: 'Mark König' },
       nombre: 'Milanesas de merluza al horno con papas y zapallitos',
       tipo: 'Cena', tiempo: '30 min',
       ingredientes: ['500 g de milanesas de merluza (pueden ir congeladas)', '2 papas', '2 zapallitos', '1 limón, aceite, sal'],
@@ -272,6 +280,7 @@ window.DATA = {
       ]
     },
     salteado: {
+      foto: { img: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'rQX9eVpSFz8', autor: 'Christopher Alvarenga' },
       nombre: 'Salteado de pollo o carne con verduras y arroz',
       tipo: 'Cena', tiempo: '15 min',
       intro: 'Del freezer: tiras de pollo o carne y el mix de salteado. El arroz, del domingo.',
@@ -284,6 +293,7 @@ window.DATA = {
       ]
     },
     fajitas: {
+      foto: { img: 'https://images.unsplash.com/photo-1689773976415-293dd893f77e?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'G3hZMCdLUdw', autor: 'Thomas Park' },
       nombre: 'Fajitas de pollo con palta',
       tipo: 'Cena', tiempo: '20 min',
       intro: 'Del freezer: tiras de pollo y el mix de fajitas. Sin picante.',
@@ -296,6 +306,7 @@ window.DATA = {
       ]
     },
     'pollo-plancha': {
+      foto: { img: 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'mjcJ0FFgdWI', autor: 'Mark DeYoung' },
       nombre: 'Pollo a la plancha con puré de batata y verduras',
       tipo: 'Cena', tiempo: '20 min',
       intro: 'Del freezer: pechugas fileteadas (a la heladera la noche anterior) y mix de salteado.',
@@ -307,6 +318,7 @@ window.DATA = {
       ]
     },
     milanesitas: {
+      foto: { img: 'https://images.unsplash.com/photo-1757715376249-b2a3e943cdf5?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'Ipji1U9RY0k', autor: 'Zayed Ahmed Zadu' },
       nombre: 'Milanesitas del freezer con ensalada',
       tipo: 'Cena', tiempo: '20 min',
       intro: 'La cena de emergencia: las milanesitas de pollo o de merluza y acelga que hay en el freezer.',
@@ -318,6 +330,7 @@ window.DATA = {
       ]
     },
     'fideos-brocoli': {
+      foto: { img: 'https://images.unsplash.com/photo-1563072915-8201ebcf6047?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: '95oPiEhowMo', autor: 'Kimiya Oveisi' },
       nombre: 'Fideos con pollo y verduras',
       tipo: 'Cena', tiempo: '20 min',
       intro: 'Del freezer: cubos de pollo. Esta semana con zapallitos y el mix de morrón; cuando haya, brócoli.',
