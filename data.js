@@ -2,6 +2,9 @@
 // Editá este archivo para cambiar platos, cantidades o ejercicios.
 
 window.DATA = {
+  // Comen poquito: todas las cantidades se muestran al 70 %
+  porcion: 0.7,
+
   usuarios: [
     { id: 'fran', nombre: 'Fran' },
     { id: 'jazmin', nombre: 'Jazmín' }
@@ -61,11 +64,11 @@ window.DATA = {
   // Guía de qué dejar en heladera y freezer
   guardado: [
     { titulo: 'Freezer · proteínas', dura: 'hasta 3 meses', items: [
-      'Tiras de pollo en bolsas de 400 g (salteado, fajitas)',
-      'Pechugas fileteadas en bolsas de a 2 (pollo a la plancha)',
+      'Tiras de pollo en bolsas de 300 g (salteado, fajitas)',
+      'Pechugas fileteadas en bolsas de 300 g (pollo a la plancha)',
       'Milanesas ya empanadas, crudas, separadas con film',
-      'Bifes en bolsas de a 2 · tiras de carne para salteado',
-      'Cubos de pollo en bolsas de 300 g (fideos con brócoli)',
+      'Bifes en bolsas de 300 g · tiras de carne para salteado',
+      'Cubos de pollo en bolsas de 200 g (fideos con brócoli)',
       'Merluza en filetes'
     ] },
     { titulo: 'Freezer · verduras', dura: 'hasta 2 meses', items: [
@@ -101,7 +104,7 @@ window.DATA = {
       pasos: [
         'Horno a 200 °C y agua a hervir (huevos y arroz).',
         'Huevos duros: 10 minutos exactos y a agua fría.',
-        'Arroz: una tanda grande (400 g crudos).',
+        'Arroz: una tanda grande (300 g crudos).',
         'Elegí 2–3 almuerzos para cocinar en tanda (por ejemplo, bowl de pollo + pastel de papa + tarta) y metelos al horno mientras porcionás.',
         'Proteínas para las cenas: cortá tiras de pollo y carne, fileteá pechugas, empaná milanesas. Todo en bolsas porcionadas, aplanadas (se congelan y descongelan más rápido) y con fecha.',
         'Verduras: armá los mix de salteado y fajitas, blanqueá el brócoli 2 min, cortá calabaza en cubos. Lo que va al freezer, bien seco.',
@@ -221,7 +224,7 @@ window.DATA = {
         'Cebolla y ajo picados 5 min, sumá la carne hasta que se dore.',
         'Zanahoria y zapallito rallados (se pierden en la salsa) 2 min.',
         'Puré de tomate, orégano, sal y medio vaso de agua. Fuego bajo 15 min.',
-        'Porcioná la salsa. Fideos: 125 g en crudo por persona.'
+        'Porcioná la salsa. Fideos: 90 g en crudo por persona.'
       ]
     },
     platito: {
@@ -250,7 +253,7 @@ window.DATA = {
       nombre: 'Bife a la plancha con puré de calabaza y brócoli',
       tipo: 'Cena', tiempo: '20 min',
       intro: 'Del freezer: bolsa de bifes (a la heladera la noche anterior), calabaza en cubos y brócoli.',
-      ingredientes: ['2 bifes (400 g)', 'Calabaza en cubos', 'Brócoli', 'Manteca, sal, pimienta, nuez moscada'],
+      ingredientes: ['Bifes: 400 g en total', 'Calabaza en cubos', 'Brócoli', 'Manteca, sal, pimienta, nuez moscada'],
       pasos: [
         'Calabaza congelada: microondas tapada 8–10 min. Pisala con manteca, sal y nuez moscada.',
         'Brócoli congelado: 4 min al vapor o en sartén con un poco de agua.',
@@ -290,14 +293,14 @@ window.DATA = {
         'Pollo con pimentón, comino y sal. Sartén caliente 5–6 min, sacalo.',
         'Cebolla y morrón 5 min en la misma sartén. Volvé el pollo.',
         'Palta pisada con limón y sal.',
-        'Tortillas calientes, relleno, queso y palta. La regla del plato: 2–3 fajitas cada uno.'
+        'Tortillas calientes, relleno, queso y palta. La regla del plato: 2 fajitas cada uno.'
       ]
     },
     'pollo-plancha': {
       nombre: 'Pollo a la plancha con puré de batata y verduras',
       tipo: 'Cena', tiempo: '20 min',
       intro: 'Del freezer: pechugas fileteadas (a la heladera la noche anterior) y mix de salteado.',
-      ingredientes: ['2 pechugas fileteadas', '2 batatas', '1 bolsa de mix de salteado', 'Limón, orégano, aceite, sal'],
+      ingredientes: ['Pechuga fileteada: 400 g', '2 batatas', '1 bolsa de mix de salteado', 'Limón, orégano, aceite, sal'],
       pasos: [
         'Batata en cubos: hervida 12 min o microondas tapada 8 min. Pisala con sal.',
         'Pechugas con limón, orégano y sal. Plancha caliente 3–4 min por lado.',

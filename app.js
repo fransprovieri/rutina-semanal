@@ -91,6 +91,26 @@
   const haceDias = (id) => { const d = (S.cocinado || {})[id]; return d ? Math.round((parse(hoy()) - parse(d)) / 86400000) : null; };
   const badgeListo = (id) => { const n = haceDias(id); return n !== null && n <= 4 ? `<span class="tag green">${n === 0 ? 'Cocinado hoy' : 'Cocinado hace ' + n + ' d'}</span>` : ''; };
 
+  // ---------- Porciones ----------
+  // Las cantidades de data.js son estándar; se muestran multiplicadas por D.porcion (0,7 = porciones chicas)
+  const NO_ESCALAR = /tapa|paquete|maple|lata|caja|diente|limón|limones|tupper|bolsa|cda|frasco/i;
+  const frac = (x) => { const e = Math.floor(x), r = x - e; const f = r >= 0.5 ? '½' : ''; return e === 0 ? (f || '½') : e + (f ? ' ' + f : ''); };
+  const contar = (n) => { const x = n * D.porcion; return x >= 2.75 ? String(Math.round(x)) : frac(Math.round(x * 2) / 2); };
+  const peso = (n, u) => {
+    let g = parseFloat(String(n).replace(',', '.')) * (u === 'kg' ? 1000 : 1) * D.porcion;
+    if (g >= 1000) return (Math.round(g / 100) / 10).toString().replace('.', ',') + ' kg';
+    g = g >= 200 ? Math.round(g / 50) * 50 : Math.round(g / 10) * 10;
+    return g + ' g';
+  };
+  const escalar = (t) => {
+    if (!D.porcion || D.porcion === 1) return t;
+    let out = t.replace(/(\d+(?:,\d+)?)\s?(kg|g)\b/g, (_, n, u) => peso(n, u));
+    if (NO_ESCALAR.test(t)) return out;
+    out = out.replace(/^(\d+)(?=\s+(?!(?:kg|g)\b)[a-záéíóúñ])/i, (m, n) => (+n >= 2 ? contar(+n) : m));
+    out = out.replace(/·\s(\d+)(?=\s|$)(?!\s*(kg|g)\b)/, (m, n) => (+n >= 2 ? '· ' + contar(+n) : m));
+    return out;
+  };
+
   // Dos columnas en escritorio; en el celular se apilan
   const cols = (izq, der) => `<div class="cols"><div class="col">${izq}</div><div class="col">${der}</div></div>`;
 
@@ -261,11 +281,11 @@
           <span class="box">${icon.check}</span><span class="grow"><b style="font-size:16px">${esc(txt)}</b></span></button>`;
       return extra ? `<div class="row" style="padding:0 16px 0 0">${b}<button class="icon-btn" data-action="superDel" data-key="${esc(key)}" aria-label="Borrar ${esc(txt)}">${icon.close}</button></div>` : b;
     };
-    const cats = D.super.map((c) => `<div class="super-cat"><h3>${esc(c.cat)}</h3><div class="group">${c.items.map((t) => item(c.cat + '|' + t, t)).join('')}</div></div>`).join('');
+    const cats = D.super.map((c) => `<div class="super-cat"><h3>${esc(c.cat)}</h3><div class="group">${c.items.map((t) => item(c.cat + '|' + t, escalar(t))).join('')}</div></div>`).join('');
     const extras = S.extras.length ? `<div class="super-cat"><h3>Agregados</h3><div class="group">${S.extras.map((t) => item('extra|' + t, t, true)).join('')}</div></div>` : '';
     return `<div class="section">
         <div class="section-title"><h2>Lista del súper</h2><span>${marcados}/${total}</span></div>
-        <p class="muted small">Una semana, para dos. Tildá lo que ya tienen en casa o lo que ya está en el carrito.</p>
+        <p class="muted small">Una semana tipo para dos, en porciones chicas. Tildá lo que ya tienen en casa o lo que ya está en el carrito.</p>
         <form class="add" data-form="addItem"><input name="item" placeholder="Agregar algo…" aria-label="Agregar a la lista" autocomplete="off"><button class="btn" type="submit">Agregar</button></form>
         <div class="super-grid">${cats}${extras}</div>
         <button class="btn ghost" data-action="superReset">${UI.superConfirm ? 'Tocá de nuevo para confirmar' : 'Desmarcar todo (nueva semana)'}</button>
@@ -360,7 +380,7 @@
         <button class="icon-btn" data-close aria-label="Cerrar">${icon.close}</button></div>
       ${r.foto ? `<figure class="hero-img"><img src="${foto(r, 900)}" alt="${esc(r.nombre)}"><figcaption>Foto: <a href="https://unsplash.com/photos/${r.foto.id}?utm_source=rutina_semanal&utm_medium=referral" target="_blank" rel="noopener">${esc(r.foto.autor)}</a> en <a href="https://unsplash.com/?utm_source=rutina_semanal&utm_medium=referral" target="_blank" rel="noopener">Unsplash</a> · de referencia</figcaption></figure>` : ''}
       ${r.intro ? `<p class="muted">${esc(r.intro)}</p>` : ''}
-      ${r.ingredientes.length ? `<div class="card"><b>Ingredientes (para dos)</b><ul class="ing" style="margin-top:8px">${r.ingredientes.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>` : ''}
+      ${r.ingredientes.length ? `<div class="card"><b>Ingredientes (para dos${r.tipo === 'Desayuno' ? '' : ', porciones chicas'})</b><ul class="ing" style="margin-top:8px">${r.ingredientes.map((i) => `<li>${esc(r.tipo === 'Desayuno' ? i : escalar(i))}</li>`).join('')}</ul></div>` : ''}
       <div><b>Paso a paso</b> <span class="muted small">· tocá un paso para tacharlo</span></div>
       <ol class="steps">${r.pasos.map((p, i) => `<li class="${done[i] ? 'done' : ''}" data-step="${i}" tabindex="0">${esc(p)}</li>`).join('')}</ol>
       ${r.tipo === 'Almuerzo' || r.tipo === 'Cena' ? `<button class="btn" data-cocinado>${haceDias(id) === 0 ? 'Cocinado hoy ✓' : 'Lo cocinamos hoy'}</button>
