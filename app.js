@@ -6,10 +6,16 @@
   const ORDEN_SEMANA = [1, 2, 3, 4, 5, 6, 0];
 
   // ---------- Estado ----------
-  const defaults = () => ({ user: 'fran', start: null, checks: {}, medidas: {}, super: {}, extras: [], tab: 'hoy', syncCode: null });
+  const defaults = () => ({ user: 'fran', start: null, checks: {}, medidas: {}, super: {}, extras: [], tab: 'hoy', syncCode: null, comidas: [], cocinado: {} });
   let S;
   try { S = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { S = defaults(); }
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* sin almacenamiento */ } };
+  const save = () => {
+    try { localStorage.setItem(KEY, JSON.stringify(S)); }
+    catch (e) {
+      // Si no entra (fotos), se guarda sin fotos: igual quedan en la nube si está sincronizado
+      try { localStorage.setItem(KEY, JSON.stringify(Object.assign({}, S, { comidas: (S.comidas || []).map((c) => Object.assign({}, c, { foto: null })) }))); } catch (e2) { /* sin almacenamiento */ }
+    }
+  };
 
   // ---------- Sincronización (ver sync.js) ----------
   let pendingRender = false;
@@ -26,7 +32,7 @@
   };
   document.addEventListener('focusout', () => { if (pendingRender) { pendingRender = false; setTimeout(render, 0); } });
   const push = (path, value) => { window.APP.queue.push([path, value]); if (window.SYNC) window.SYNC.flush(); };
-  const pushTodo = () => ['start', 'checks', 'medidas', 'super', 'extras'].forEach((k) => push([k], S[k]));
+  const pushTodo = () => { ['start', 'checks', 'medidas', 'super', 'extras', 'cocinado'].forEach((k) => push([k], S[k])); (S.comidas || []).forEach((c) => push(['__comida'], c)); };
   const nuevoCodigo = () => {
     const abc = 'abcdefghjkmnpqrstuvwxyz23456789';
     const r = crypto.getRandomValues(new Uint8Array(20));
@@ -34,7 +40,7 @@
   };
 
   // UI temporal (no se guarda)
-  const UI = { fecha: null, comidasVista: 'semana', recetaPasos: {}, superConfirm: false };
+  const UI = { fecha: null, comidasVista: 'almuerzos', recetaPasos: {}, superConfirm: false };
 
   // ---------- Fechas ----------
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -79,6 +85,12 @@
   const foto = (r, w) => r.foto ? `${r.foto.img}&w=${w}` : null;
   const thumb = (r) => r.foto ? `<img class="thumb" src="${foto(r, 160)}" alt="" loading="lazy">` : '<span class="thumb ph"></span>';
 
+  const fotoComida = (c) => c.foto ? `<img class="thumb" src="${c.foto}" alt="">` : (c.receta && D.recetas[c.receta] ? thumb(D.recetas[c.receta]) : '<span class="thumb ph"></span>');
+  const semanaDe = (f) => { const off = (parse(f).getDay() + 6) % 7; const ini = addDays(f, -off); return Array.from({ length: 7 }, (_, i) => addDays(ini, i)); };
+  const ensaladasSemana = (u, f) => { const sem = semanaDe(f); return (S.comidas || []).filter((c) => c.user === u && sem.includes(c.fecha) && c.ensalada).length; };
+  const haceDias = (id) => { const d = (S.cocinado || {})[id]; return d ? Math.round((parse(hoy()) - parse(d)) / 86400000) : null; };
+  const badgeListo = (id) => { const n = haceDias(id); return n !== null && n <= 4 ? `<span class="tag green">${n === 0 ? 'Cocinado hoy' : 'Cocinado hace ' + n + ' d'}</span>` : ''; };
+
   // Dos columnas en escritorio; en el celular se apilan
   const cols = (izq, der) => `<div class="cols"><div class="col">${izq}</div><div class="col">${der}</div></div>`;
 
@@ -117,14 +129,12 @@
       </div>`;
     }
 
-    const m = D.menu[d];
-    const comida = (lbl, id) => {
-      const r = D.recetas[id];
-      return `<button class="row" data-action="receta" data-id="${id}">
-        ${thumb(r)}
-        <span class="grow"><span class="sub">${lbl}</span><b>${esc(r.nombre)}</b></span>
-        <span class="chev">${icon.chev}</span></button>`;
-    };
+    const delDia = (S.comidas || []).filter((x) => x.user === S.user && x.fecha === f).sort((a, b) => a.ts - b.ts);
+    const ens = D.ensaladas[S.user];
+    const filasComida = delDia.length ? delDia.map((x) => `<div class="row">${fotoComida(x)}
+        <span class="grow"><span class="sub">${x.tipo === 'cena' ? 'Cena' : 'Almuerzo'}${x.ensalada ? ' · con ensalada' : ''}</span><b>${esc(x.receta && D.recetas[x.receta] ? D.recetas[x.receta].nombre : x.texto || 'Comida')}</b>${x.receta && x.texto ? `<span class="sub">${esc(x.texto)}</span>` : ''}</span>
+        <button class="icon-btn" data-action="comidaDel" data-id="${x.id}" aria-label="Borrar">${icon.close}</button></div>`).join('')
+      : '<div class="row"><span class="grow"><span class="sub">Todavía no registraste nada. Es opcional: sirve para acordarse qué funcionó.</span></span></div>';
 
     const e = D.entreno[d];
     let entreno;
@@ -155,12 +165,10 @@
 
     return cols(`<div style="order:1">${hello}</div><div style="order:2;margin-bottom:18px">${hero}</div>
       <div class="section" style="order:4">
-        <div class="section-title"><h2>Comidas</h2><span>${DIAS[d]}</span></div>
-        <div class="group">
-        ${comida('Desayuno', desayunoDe(f))}
-        ${comida('Almuerzo', m.almuerzo)}
-        ${comida(m.cena === 'mealprep' ? 'Preparación' : 'Cena', m.cena)}
-        </div>
+        <div class="section-title"><h2>Comidas</h2><span>Ensalada cruda: ${ensaladasSemana(S.user, f)}/${ens.meta} esta semana</span></div>
+        <div class="group">${filasComida}</div>
+        <div class="btn-row"><button class="btn" data-action="registrar" data-tipo="almuerzo">+ Almuerzo</button><button class="btn" data-action="registrar" data-tipo="cena">+ Cena</button></div>
+        <button class="link-row" data-tab="comidas" style="padding:0 6px">Ver opciones de la semana ${icon.chev}</button>
       </div>
       <div class="section" style="order:5">
         <div class="section-title"><h2>Entreno</h2></div>
@@ -177,32 +185,30 @@
   }
 
   function vistaComidas() {
+    const v = ['almuerzos', 'cenas', 'prep'].includes(UI.comidasVista) ? UI.comidasVista : 'almuerzos';
     const seg = `<div class="seg" role="group" aria-label="Vista">
-      <button data-action="cv" data-v="semana" aria-pressed="${UI.comidasVista === 'semana'}">Semana</button>
-      <button data-action="cv" data-v="recetas" aria-pressed="${UI.comidasVista === 'recetas'}">Recetas</button></div>`;
+      <button data-action="cv" data-v="almuerzos" aria-pressed="${v === 'almuerzos'}">Almuerzos</button>
+      <button data-action="cv" data-v="cenas" aria-pressed="${v === 'cenas'}">Cenas</button>
+      <button data-action="cv" data-v="prep" aria-pressed="${v === 'prep'}">Preparación</button></div>`;
+    const fila = (id) => { const r = D.recetas[id]; return `<button class="row" data-action="receta" data-id="${id}">${thumb(r)}<span class="grow"><b>${esc(r.nombre)}</b><span class="sub">${esc(r.tiempo)}</span></span>${badgeListo(id)}<span class="chev">${icon.chev}</span></button>`; };
     let body;
-    if (UI.comidasVista === 'semana') {
-      const hd = parse(hoy()).getDay();
-      body = `<button class="row card dark" data-action="receta" data-id="mealprep" style="padding:20px 24px">
-          <span class="grow"><span class="eyebrow"><em style="font-size:18px;color:var(--ink)">domingo</em></span><b>Meal prep: pollo, arroz, verduras y huevos</b><span class="sub">1 h 15 min · resuelve lunes a miércoles</span></span><span class="chev">${icon.chev}</span></button>
-        <div class="card" style="display:grid;gap:4px"><b>Desayunos</b>
-          <button class="meal" data-action="receta" data-id="desayuno-a"><span class="lbl">Día impar</span><span>${esc(D.recetas['desayuno-a'].nombre.split('· ')[1])}</span>${icon.chev}</button>
-          <button class="meal" data-action="receta" data-id="desayuno-b"><span class="lbl">Día par</span><span>${esc(D.recetas['desayuno-b'].nombre.split('· ')[1])}</span>${icon.chev}</button></div>` +
-        '<div class="days-grid">' + ORDEN_SEMANA.map((d) => {
-          const m = D.menu[d];
-          return `<div class="card day ${d === hd ? 'today-mark' : ''}">
-            <div class="day-head"><h3>${DIAS[d]}</h3>${d === hd ? '<span class="tag green">Hoy</span>' : ''}</div>
-            <button class="meal" data-action="receta" data-id="${m.almuerzo}"><span class="lbl">Almuerzo</span><span>${esc(D.recetas[m.almuerzo].nombre)}</span>${icon.chev}</button>
-            <button class="meal" data-action="receta" data-id="${m.cena}"><span class="lbl">${m.cena === 'mealprep' ? 'Prep' : 'Cena'}</span><span>${esc(D.recetas[m.cena].nombre)}</span>${icon.chev}</button>
-          </div>`;
-        }).join('') + '</div>';
+    if (v === 'almuerzos') {
+      const orden = [S.user, ...D.usuarios.map((u) => u.id).filter((u) => u !== S.user)];
+      body = `<p class="muted small" style="padding:0 6px">Comidas que se cocinan en tanda y quedan en tuppers. Cada día elegís la que tengas ganas.</p>` +
+        orden.map((u) => {
+          const nom = D.usuarios.find((x) => x.id === u).nombre;
+          const e = D.ensaladas[u];
+          return `<div class="section-title" style="padding-top:8px"><h2 style="font-size:19px">De ${esc(nom)}</h2><span>Ensalada cruda ${e.meta} por semana</span></div>
+            <div class="group flat">${D.almuerzos[u].map(fila).join('')}${u === 'fran' ? fila('ensalada-fran') : ''}</div>`;
+        }).join('') +
+        `<div class="section-title" style="padding-top:8px"><h2 style="font-size:19px">Desayunos</h2></div><div class="group flat">${D.desayunos.map(fila).join('')}</div>`;
+    } else if (v === 'cenas') {
+      body = `<p class="muted small" style="padding:0 6px">Los ingredientes quedan cortados y porcionados (freezer y heladera). A la noche elegís una y se cocina en 15–30 min.</p>
+        <div class="group flat">${D.cenas.map(fila).join('')}</div>`;
     } else {
-      const grupos = {};
-      Object.entries(D.recetas).forEach(([id, r]) => { (grupos[r.tipo] = grupos[r.tipo] || []).push([id, r]); });
-      body = ['Preparación', 'Desayuno', 'Almuerzo', 'Cena'].filter((g) => grupos[g]).map((g) =>
-        `<div class="section-title" style="padding-top:6px"><h2 style="font-size:18px">${g}</h2></div><div class="group flat">` +
-        grupos[g].map(([id, r]) => `<button class="row" data-action="receta" data-id="${id}">${thumb(r)}<span class="grow"><b>${esc(r.nombre)}</b><span class="sub">${esc(r.tiempo)}</span></span><span class="chev">${icon.chev}</span></button>`).join('') + '</div>'
-      ).join('');
+      body = `<button class="row card dark" data-action="receta" data-id="mealprep" style="padding:20px 24px">
+          <span class="grow"><span class="eyebrow"><em style="font-size:18px;color:var(--ink)">domingo</em></span><b>${esc(D.recetas.mealprep.nombre)}</b><span class="sub">${esc(D.recetas.mealprep.tiempo)} · deja todo listo para elegir</span></span><span class="chev">${icon.chev}</span></button>
+        <div class="days-grid">${D.guardado.map((g) => `<div class="card" style="display:flex;flex-direction:column;gap:8px"><div class="day-head" style="padding:0"><h3>${esc(g.titulo)}</h3>${g.dura ? `<span class="tag">${esc(g.dura)}</span>` : ''}</div><ul class="ing">${g.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}</div>`;
     }
     return `<div class="section"><div class="section-title"><h2>Comidas</h2></div>${seg}${body}</div>
       <div class="card" style="display:flex;gap:16px;align-items:center">
@@ -352,16 +358,80 @@
       ${r.ingredientes.length ? `<div class="card"><b>Ingredientes (para dos)</b><ul class="ing" style="margin-top:8px">${r.ingredientes.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>` : ''}
       <div><b>Paso a paso</b> <span class="muted small">· tocá un paso para tacharlo</span></div>
       <ol class="steps">${r.pasos.map((p, i) => `<li class="${done[i] ? 'done' : ''}" data-step="${i}" tabindex="0">${esc(p)}</li>`).join('')}</ol>
+      ${r.tipo === 'Almuerzo' || r.tipo === 'Cena' ? `<button class="btn" data-cocinado>${haceDias(id) === 0 ? 'Cocinado hoy ✓' : 'Lo cocinamos hoy'}</button>
+        <p class="muted small" style="text-align:center">${S.cocinado && S.cocinado[id] ? 'Última vez: ' + esc(fechaLarga(S.cocinado[id])) : 'Todavía no lo cocinaron'}</p>` : ''}
     </div>`;
     const cerrar = () => { back.remove(); document.body.style.overflow = ''; };
     back.addEventListener('click', (ev) => {
       if (ev.target === back || ev.target.closest('[data-close]')) return cerrar();
+      if (ev.target.closest('[data-cocinado]')) {
+        S.cocinado = S.cocinado || {}; S.cocinado[id] = hoy(); push(['cocinado', id], hoy()); save(); render();
+        ev.target.closest('[data-cocinado]').textContent = 'Cocinado hoy ✓'; const nx = ev.target.closest('[data-cocinado]').nextElementSibling; if (nx) nx.textContent = 'Última vez: ' + fechaLarga(hoy()); return;
+      }
       const li = ev.target.closest('[data-step]');
       if (li) { const i = li.dataset.step; done[i] = !done[i]; UI.recetaPasos[id] = done; li.classList.toggle('done', !!done[i]); }
     });
     document.body.appendChild(back);
     document.body.style.overflow = 'hidden';
     back.querySelector('[data-close]').focus();
+  }
+
+  // ---------- Registrar comida ----------
+  function achicarFoto(file) {
+    return new Promise((ok, mal) => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 520, k = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(img.src); ok(c.toDataURL('image/jpeg', 0.62));
+      };
+      img.onerror = mal; img.src = URL.createObjectURL(file);
+    });
+  }
+  function abrirRegistro(tipo) {
+    const ops = tipo === 'cena' ? D.cenas : D.almuerzos[S.user];
+    let elegida = null, foto = null;
+    const back = document.createElement('div');
+    back.className = 'sheet-back';
+    back.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rg">
+      <div class="sheet-head"><div><span class="eyebrow">${esc(fechaLarga(UI.fecha))} · ${esc(D.usuarios.find((u) => u.id === S.user).nombre)}</span><h2 id="rg">¿Qué ${tipo === 'cena' ? 'cenaste' : 'almorzaste'}?</h2></div>
+        <button class="icon-btn" data-close aria-label="Cerrar">${icon.close}</button></div>
+      <div class="group flat">${ops.map((id) => `<button class="row opt" data-rid="${id}" aria-pressed="false">${thumb(D.recetas[id])}<span class="grow"><b>${esc(D.recetas[id].nombre)}</b></span><span class="box">${icon.check}</span></button>`).join('')}</div>
+      <div class="field"><label for="rgTexto">Otra cosa o una nota (opcional)</label><input id="rgTexto" placeholder="Ej: comimos afuera, sushi"></div>
+      <button class="row check" data-ens aria-pressed="false" style="border-radius:22px;background:rgba(255,255,255,0.55)"><span class="box">${icon.check}</span><span class="grow"><b>Con ensalada cruda</b><span class="sub">Cuenta para la meta de la semana (${D.ensaladas[S.user].meta})</span></span></button>
+      <label class="btn ghost" style="display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer"><span data-fotolbl>Agregar foto (opcional)</span><input type="file" accept="image/*" data-foto hidden></label>
+      <img data-prev alt="" style="display:none;width:100%;border-radius:22px">
+      <button class="btn" data-guardar>Guardar</button>
+    </div>`;
+    const cerrar = () => { back.remove(); document.body.style.overflow = ''; };
+    const ens = back.querySelector('[data-ens]');
+    const setEns = (on) => { ens.classList.toggle('on', on); ens.setAttribute('aria-pressed', on); };
+    back.addEventListener('click', (ev) => {
+      if (ev.target === back || ev.target.closest('[data-close]')) return cerrar();
+      const o = ev.target.closest('[data-rid]');
+      if (o) {
+        elegida = elegida === o.dataset.rid ? null : o.dataset.rid;
+        back.querySelectorAll('[data-rid]').forEach((b) => { const on = b.dataset.rid === elegida; b.classList.toggle('check', true); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+        if (elegida === 'platito' || elegida === 'ensalada-fran') setEns(true);
+        return;
+      }
+      if (ev.target.closest('[data-ens]')) { setEns(!ens.classList.contains('on')); return; }
+      if (ev.target.closest('[data-guardar]')) {
+        const texto = back.querySelector('#rgTexto').value.trim();
+        if (!elegida && !texto && !foto) { toast('Elegí una opción, escribí algo o subí una foto'); return; }
+        const c = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), fecha: UI.fecha, user: S.user, tipo, receta: elegida, texto, ensalada: ens.classList.contains('on'), foto, ts: Date.now() };
+        S.comidas = S.comidas || []; S.comidas.push(c); push(['__comida'], c); save(); cerrar(); render(); toast('Guardado');
+      }
+    });
+    back.querySelector('[data-foto]').addEventListener('change', (ev) => {
+      const f = ev.target.files[0]; if (!f) return;
+      back.querySelector('[data-fotolbl]').textContent = 'Procesando…';
+      achicarFoto(f).then((url) => { foto = url; const p = back.querySelector('[data-prev]'); p.src = url; p.style.display = 'block'; back.querySelector('[data-fotolbl]').textContent = 'Cambiar foto'; })
+        .catch(() => { back.querySelector('[data-fotolbl]').textContent = 'No se pudo leer la foto'; });
+    });
+    document.body.appendChild(back);
+    document.body.style.overflow = 'hidden';
   }
 
   // ---------- Timer ----------
@@ -479,6 +549,8 @@
     else if (a === 'toggle') { const c = userChecks(S.user, UI.fecha); c[el.dataset.id] = !c[el.dataset.id]; push(['checks', S.user, UI.fecha], c); }
     else if (a === 'energia') { const c = userChecks(S.user, UI.fecha); const v = Number(el.dataset.v); c.energia = c.energia === v ? null : v; push(['checks', S.user, UI.fecha], c); }
     else if (a === 'receta') { return abrirReceta(el.dataset.id); }
+    else if (a === 'registrar') { return abrirRegistro(el.dataset.tipo); }
+    else if (a === 'comidaDel') { const id = el.dataset.id; S.comidas = (S.comidas || []).filter((c) => c.id !== id); push(['__comidaDel'], id); }
     else if (a === 'startTimer') { return startTimer(); }
     else if (a === 'cv') { UI.comidasVista = el.dataset.v; }
     else if (a === 'superToggle') { S.super[el.dataset.key] = !S.super[el.dataset.key]; push(['super', el.dataset.key], S.super[el.dataset.key]); }

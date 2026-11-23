@@ -5,19 +5,20 @@
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
-  initializeFirestore, persistentLocalCache, doc, onSnapshot, setDoc, updateDoc, FieldPath
+  initializeFirestore, persistentLocalCache, doc, collection, onSnapshot, setDoc, updateDoc, deleteDoc, FieldPath
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const APP = window.APP;
 const cfg = window.FIREBASE_CONFIG;
-const SHARED = ['start', 'checks', 'medidas', 'super', 'extras'];
+const SHARED = ['start', 'checks', 'medidas', 'super', 'extras', 'cocinado'];
 
-let db = null, ref = null, unsub = null, ready = false;
+let db = null, ref = null, unsub = null, unsubC = null, ready = false;
 
 function setStatus(st) { APP.syncStatus = st; APP.rerender(); }
 
 function connect() {
   if (unsub) { unsub(); unsub = null; }
+  if (unsubC) { unsubC(); unsubC = null; }
   ready = false;
   const code = APP.state.syncCode;
   if (!cfg || !code) { setStatus(cfg ? 'sin-codigo' : 'sin-config'); return; }
@@ -55,13 +56,34 @@ function connect() {
         if (v && !(remoto.super && k in remoto.super)) faltan.push([['super', k], v]);
       }
       if (!remoto.start && S.start) faltan.push([['start'], S.start]);
+      for (const [k, v] of Object.entries(S.cocinado || {})) {
+        if (!(remoto.cocinado && remoto.cocinado[k])) faltan.push([['cocinado', k], v]);
+      }
       faltan.forEach(([p, v]) => APP.queue.push([p, v]));
     }
     SHARED.forEach((k) => { if (k in remoto) S[k] = remoto[k] ?? (k === 'extras' ? [] : k === 'start' ? null : {}); });
+    if (!('cocinado' in remoto)) APP.queue.push([['cocinado'], S.cocinado || {}]);
     APP.saveLocal();
     ready = true;
     flush();
     setStatus(snap.metadata.fromCache ? 'offline' : 'ok');
+  }, err);
+
+  // Registro de comidas: un documento por comida (pueden tener foto)
+  let primeraC = true;
+  unsubC = onSnapshot(collection(ref, 'comidas'), (qs) => {
+    const S = APP.state;
+    const remotas = qs.docs.map((d) => d.data());
+    if (primeraC) {
+      primeraC = false;
+      const ids = new Set(remotas.map((c) => c.id));
+      (S.comidas || []).forEach((c) => { if (!ids.has(c.id)) APP.queue.push([['__comida'], c]); });
+      flush();
+      if ((S.comidas || []).some((c) => !ids.has(c.id))) return;
+    }
+    S.comidas = remotas;
+    APP.saveLocal();
+    APP.rerender();
   }, err);
 }
 
@@ -75,6 +97,8 @@ function flush() {
   if (!ready || !ref) return;
   while (APP.queue.length) {
     const [path, value] = APP.queue.shift();
+    if (path[0] === '__comida') { setDoc(doc(ref, 'comidas', value.id), value).catch(err); continue; }
+    if (path[0] === '__comidaDel') { deleteDoc(doc(ref, 'comidas', value)).catch(err); continue; }
     updateDoc(ref, new FieldPath(...path), value === undefined ? null : value).catch(err);
   }
 }

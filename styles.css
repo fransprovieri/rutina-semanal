@@ -289,3 +289,5 @@ details.card[open] summary { margin-bottom: 14px; }
 .fig-box { flex: none; width: 92px; height: 78px; border-radius: 18px; background: rgba(255,255,255,0.7); padding: 6px 8px; }
 .timer-fig { width: 200px; height: 166px; padding: 14px; border-radius: 32px; background: rgba(255,255,255,0.92); }
 .timer-fig.dim { opacity: 0.7; }
+.sheet .check.on b { text-decoration: none; color: var(--ink); }
+.sheet .opt.on { background: rgba(255,255,255,0.6); }

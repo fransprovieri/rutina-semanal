@@ -37,209 +37,280 @@ window.DATA = {
     { hora: '23:30', titulo: 'A dormir', detalle: '8 horas hasta el despertador.', tipo: 'descanso' }
   ],
 
-  // 0 = domingo ... 6 = sábado (como Date.getDay())
-  menu: {
-    1: { almuerzo: 'bowl', cena: 'bife' },
-    2: { almuerzo: 'wrap', cena: 'merluza' },
-    3: { almuerzo: 'bowl', cena: 'cerdo' },
-    4: { almuerzo: 'cerdo-sobra', cena: 'milanesas' },
-    5: { almuerzo: 'milanesa-sobra', cena: 'bolognesa' },
-    6: { almuerzo: 'tortilla', cena: 'hamburguesas' },
-    0: { almuerzo: 'libre', cena: 'mealprep' }
-  },
-
   entreno: { 1: 'correr', 2: 'fuerza', 3: 'correr', 4: 'fuerza', 5: 'correr', 6: 'fuerza', 0: 'libre' },
 
+  // Nada es obligatorio: son listas para elegir día a día.
+  // Almuerzos listos: se cocinan en tanda (domingo o la noche anterior) y se calientan.
+  almuerzos: {
+    fran: ['bowl', 'wrap', 'cerdo', 'milanesas', 'tarta', 'pastel', 'bolognesa'],
+    jazmin: ['platito', 'pastel', 'bowl', 'milanesas', 'tarta']
+  },
+  // Ensalada cruda por semana (meta liviana, se cuenta al registrar la comida)
+  ensaladas: {
+    fran: { meta: 2, receta: 'ensalada-fran' },
+    jazmin: { meta: 3, receta: 'platito' }
+  },
+  // Cenas rápidas: ingredientes cortados y porcionados; se cocinan en 15–25 min
+  cenas: ['bife', 'merluza', 'salteado', 'fajitas', 'pollo-plancha', 'fideos-brocoli'],
+  desayunos: ['desayuno-a', 'desayuno-b'],
+
+  // Guía de qué dejar en heladera y freezer
+  guardado: [
+    { titulo: 'Freezer · proteínas', dura: 'hasta 3 meses', items: [
+      'Tiras de pollo en bolsas de 400 g (salteado, fajitas)',
+      'Pechugas fileteadas en bolsas de a 2 (pollo a la plancha)',
+      'Milanesas ya empanadas, crudas, separadas con film',
+      'Bifes en bolsas de a 2 · tiras de carne para salteado',
+      'Cubos de pollo en bolsas de 300 g (fideos con brócoli)',
+      'Merluza en filetes'
+    ] },
+    { titulo: 'Freezer · verduras', dura: 'hasta 2 meses', items: [
+      'Mix para salteado: cebolla, morrón, zanahoria y zapallito en tiras',
+      'Mix para fajitas: cebolla y morrón en tiras',
+      'Brócoli en ramitos, blanqueado 2 min y bien seco',
+      'Calabaza en cubos (para puré)',
+      'Espinaca (si es fresca, blanqueada y escurrida)'
+    ] },
+    { titulo: 'Heladera · listo para usar', dura: '3–4 días', items: [
+      'Zanahoria en bastones y rallada',
+      'Tomates cherry lavados · lechuga lavada y seca (con papel adentro)',
+      'Huevos duros con cáscara',
+      'Lentejas y porotos enjuagados, en tuppers',
+      'Arroz cocido · almuerzos listos en tuppers individuales'
+    ] },
+    { titulo: 'Para descongelar', dura: '', items: [
+      'Lo mejor: pasarlo del freezer a la heladera la noche anterior.',
+      'Apuro: bolsa cerrada en un bol con agua fría, 20–30 min.',
+      'Las tiras finas y los mix de verdura van directo a la sartén, sin descongelar.'
+    ] }
+  ],
+
   recetas: {
+    mealprep: {
+      nombre: 'Preparación del domingo',
+      tipo: 'Preparación', tiempo: '1 h 30 min',
+      intro: 'Una sola sesión que deja todo listo para elegir en la semana. No hace falta hacerlo todo: elegí 2 o 3 almuerzos para cocinar en tanda y porcioná el resto para el freezer.',
+      ingredientes: [
+        'Lo que traigan del súper (ver lista)',
+        'Bolsas tipo zip, tuppers individuales, film y marcador para fechar'
+      ],
+      pasos: [
+        'Horno a 200 °C y agua a hervir (huevos y arroz).',
+        'Huevos duros: 10 minutos exactos y a agua fría.',
+        'Arroz: una tanda grande (400 g crudos).',
+        'Elegí 2–3 almuerzos para cocinar en tanda (por ejemplo, bowl de pollo + pastel de papa + tarta) y metelos al horno mientras porcionás.',
+        'Proteínas para las cenas: cortá tiras de pollo y carne, fileteá pechugas, empaná milanesas. Todo en bolsas porcionadas, aplanadas (se congelan y descongelan más rápido) y con fecha.',
+        'Verduras: armá los mix de salteado y fajitas, blanqueá el brócoli 2 min, cortá calabaza en cubos. Lo que va al freezer, bien seco.',
+        'Platitos de Jaz: zanahoria rallada y en bastones, cherrys lavados, legumbres enjuagadas en tuppers.',
+        'Cuando los almuerzos se enfríen, porcioná en tuppers individuales: lo de lunes a miércoles a la heladera, el resto al freezer.',
+        'Marcá en la app (en cada receta) lo que cocinaron, así saben qué hay listo.'
+      ]
+    },
     'desayuno-a': {
       foto: { img: 'https://images.unsplash.com/photo-1583552336796-531290f1fe2a?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'yPHKox1Quyw', autor: 'Alfredo Alvarado' },
-      nombre: 'Desayuno A · Huevos revueltos con tostada',
+      nombre: 'Huevos revueltos con tostada',
       tipo: 'Desayuno', tiempo: '10 min',
       ingredientes: ['5–6 huevos', '2 rebanadas de pan', 'Manteca (1 pulgar cada uno)', 'Sal y pimienta', 'Café o mate'],
       pasos: [
         'Poné a tostar el pan.',
         'Batí los huevos con una pizca de sal.',
         'Sartén a fuego medio-bajo con un poco de manteca. Volcá los huevos y movelos despacio con espátula.',
-        'Sacalos cuando todavía estén un poco húmedos: se terminan de hacer solos en el plato.',
-        'Tostada con manteca, y listo.'
+        'Sacalos cuando todavía estén un poco húmedos: se terminan de hacer solos en el plato.'
       ]
     },
     'desayuno-b': {
-      nombre: 'Desayuno B · Tostada con dulce, yogur y huevo duro',
+      nombre: 'Tostada con dulce, yogur y huevo duro',
       tipo: 'Desayuno', tiempo: '5 min',
-      ingredientes: ['2 rebanadas de pan', 'Manteca y dulce de arándanos', '2 yogures naturales sin azúcar', '2 huevos duros (del meal prep)', 'Café o mate'],
+      ingredientes: ['2 rebanadas de pan', 'Manteca y dulce de arándanos', '2 yogures naturales sin azúcar', '2 huevos duros (del domingo)', 'Café o mate'],
       pasos: [
         'Tostá el pan y untalo con manteca y una capa fina de dulce.',
-        'Un yogur natural y un huevo duro cada uno.',
-        'Tip: si el yogur te resulta ácido, sumale unas rodajas de banana o canela.'
+        'Un yogur natural y un huevo duro cada uno.'
       ]
     },
-    mealprep: {
-      foto: { img: 'https://images.unsplash.com/photo-1543353071-c953d88f7033?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'sosOqjx31Go', autor: 'Ella Olsson' },
-      nombre: 'Meal prep del domingo',
-      tipo: 'Preparación', tiempo: '1 h 15 min',
-      intro: 'Deja listos los almuerzos de lunes a miércoles (bowl, wrap, bowl) y los huevos de los desayunos. Jueves y viernes se resuelven con lo que se cocina de más en la cena anterior: nadie cocina al mediodía.',
-      ingredientes: [
-        '1 kg de pollo (pechuga o muslo deshuesado)',
-        '400 g de arroz (crudo)',
-        '1 calabaza o zapallo anco',
-        '3 zanahorias',
-        '2 cebollas',
-        '2 morrones',
-        '2 papas o 1 batata (la parte de carbo de la bandeja)',
-        '6 huevos',
-        '300 g de carne picada, 1 cebolla, 1 morrón y 1 zanahoria (relleno de los wraps del martes)',
-        'Aceite de oliva, sal, pimienta, pimentón dulce, orégano, ajo, 1 limón'
-      ],
-      pasos: [
-        '0:00 · Prendé el horno a 200 °C. Poné a hervir agua para los huevos.',
-        '0:05 · Marinada del pollo: aceite, jugo de limón, ajo picado, pimentón, orégano, sal y pimienta. Mezclalo con el pollo en una fuente.',
-        '0:10 · Cortá la calabaza, zanahoria, cebolla, morrón y papa en cubos parecidos (2–3 cm). Regla: 1 parte de papa, 3 partes del resto. Aceite, sal y pimienta, todo en una bandeja en una sola capa.',
-        '0:15 · Las dos bandejas al horno: pollo arriba, verduras abajo.',
-        '0:15 · Huevos al agua hirviendo, 10 minutos exactos. Después a agua fría.',
-        '0:20 · Arroz: 400 g en olla con el doble de agua y sal. Hervor, tapá, fuego mínimo 15 min.',
-        '0:35 · Dá vuelta las verduras.',
-        '0:45 · Pollo listo cuando el jugo sale transparente (unos 30–35 min). Sacalo y dejalo reposar 5 min antes de cortar en tiras.',
-        '0:50 · Verduras listas cuando están doradas y blandas. Si falta, 10 min más.',
-        '0:40 · Relleno de wraps: en sartén, cebolla y morrón picados 5 min, sumá la carne picada y la zanahoria rallada, 8–10 min. Sal y pimentón.',
-        '1:00 · Dejá enfriar todo y armá los tuppers: 4 bowls (lunes y miércoles, dos por día), 1 tupper con el relleno de los wraps (martes) y los huevos con cáscara.',
-        'Guardado: todo aguanta 3–4 días en la heladera, justo hasta el miércoles. Si algún bowl no se come, al freezer.'
-      ]
-    },
+
+    // ---------- Almuerzos listos ----------
     bowl: {
       foto: { img: 'https://images.unsplash.com/photo-1543353071-c953d88f7033?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'sosOqjx31Go', autor: 'Ella Olsson' },
       nombre: 'Bowl de pollo, arroz y verduras al horno',
-      tipo: 'Almuerzo', tiempo: '5 min (con meal prep)',
-      ingredientes: ['Pollo del meal prep (1–2 palmas c/u)', 'Arroz (1 puño c/u)', 'Verduras al horno (2 puños c/u)', 'Opcional: 1 tomate, limón, aceite de oliva'],
+      tipo: 'Almuerzo', tiempo: '50 min en tanda · 3 min para servir',
+      intro: 'Rinde 4 bowls. Aguanta 4 días en heladera.',
+      ingredientes: ['1 kg de pollo (pechuga o muslo)', '200 g de arroz crudo (o del arroz del domingo)', '1 calabaza chica, 2 zanahorias, 1 cebolla, 1 morrón', '1 papa o 1 batata', 'Aceite, limón, ajo, pimentón, orégano, sal'],
       pasos: [
-        'Armá cada bowl con la regla de la mano: medio bowl de verdura, un cuarto de pollo, un cuarto de arroz.',
-        'Calentá 2 minutos en el microondas.',
-        'Terminalo con un chorrito de aceite de oliva y limón. Comé primero verdura y pollo.'
-      ]
-    },
-    bife: {
-      foto: { img: 'https://images.unsplash.com/photo-1644704265419-96ddaf628e71?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: '7WJV-SDSj6c', autor: 'Clark Douglas' },
-      nombre: 'Bife a la plancha con puré de calabaza y brócoli',
-      tipo: 'Cena', tiempo: '25 min',
-      ingredientes: ['500 g de bife (nalga, cuadril o bife de chorizo)', '½ calabaza', '1 brócoli', 'Manteca, sal, pimienta, nuez moscada'],
-      pasos: [
-        'Pelá y cortá la calabaza en cubos. Hervila 15 min (o microondas tapada 10 min) hasta que esté blanda.',
-        'Brócoli en ramitos: 4–5 min al vapor o hervido, que quede verde.',
-        'Pisá la calabaza con un poco de manteca, sal y nuez moscada.',
-        'Plancha o sartén bien caliente. Bifes secos con papel, sal y a la plancha: 3–4 min por lado para jugoso.',
-        'Dejá reposar la carne 3 min antes de cortar.'
+        'Horno a 200 °C. Pollo con aceite, limón, ajo, pimentón, orégano y sal.',
+        'Verduras en cubos parecidos (1 parte de papa, 3 del resto), en otra bandeja con aceite y sal.',
+        'Las dos bandejas al horno 35 min. Dá vuelta las verduras a la mitad.',
+        'Pollo en tiras. Armá 4 tuppers: medio de verdura, un cuarto de pollo, un cuarto de arroz.',
+        'Para comer: 2–3 min de microondas y un chorrito de aceite y limón.'
       ]
     },
     wrap: {
-      nombre: 'Wraps de carne picada',
-      tipo: 'Almuerzo', tiempo: '5 min (relleno del domingo)',
       foto: { img: 'https://images.unsplash.com/photo-1719282431723-9d0f4370d4bc?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'xq04aTV-LVk', autor: 'Bayuaji Abiyu' },
-      intro: 'El relleno ya está hecho del domingo. Si se lleva, se puede comer frío o armarlo a la mañana.',
-      ingredientes: ['Relleno de carne del meal prep', '4 tortillas', '100 g de queso cremoso', 'Lechuga y tomate'],
+      nombre: 'Wraps de carne picada',
+      tipo: 'Almuerzo', tiempo: '20 min en tanda · 5 min para armar',
+      intro: 'El relleno aguanta 3 días en heladera o se congela en porciones.',
+      ingredientes: ['300 g de carne picada magra (2 porciones)', '1 cebolla, 1 morrón, 1 zanahoria rallada', 'Tortillas (2 por porción)', 'Queso cremoso, lechuga y tomate', 'Pimentón dulce, sal'],
       pasos: [
-        'Calentá el relleno 1–2 min en microondas (o comelo frío si se lleva).',
-        'Tortillas 20 s por lado en sartén seca o 15 s en microondas.',
-        'Rellená con carne, queso, lechuga y tomate. Enrollá apretado; envuelto en papel aluminio viaja bien.'
-      ]
-    },
-    merluza: {
-      foto: { img: 'https://images.unsplash.com/photo-1793691279531-f4a9873169d5?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'gJCJreBH0kM', autor: 'Murat Ts.' },
-      nombre: 'Merluza al horno con papas y zapallitos',
-      tipo: 'Cena', tiempo: '35 min',
-      ingredientes: ['500 g de filet de merluza', '2 papas medianas', '3 zapallitos', '1 limón', 'Ajo, perejil, aceite de oliva, sal, pimienta'],
-      pasos: [
-        'Horno a 200 °C. Papas en rodajas finas (½ cm) con aceite y sal en una fuente: 15 min solas.',
-        'Zapallitos en medias lunas.',
-        'Sacá la fuente, agregá los zapallitos y poné los filetes arriba. Ajo picado, limón, aceite, sal y pimienta.',
-        '12–15 min más: el pescado está cuando se separa en lascas con un tenedor.',
-        'Perejil por arriba al servir.'
+        'Cebolla y morrón picados 5 min en sartén con un poco de aceite.',
+        'Sumá la carne, desarmala y cociná 8–10 min. Agregá la zanahoria, pimentón y sal.',
+        'Porcioná el relleno en tuppers.',
+        'Para comer: calentá el relleno, tortillas 20 s por lado en sartén seca, armá con queso, lechuga y tomate.'
       ]
     },
     cerdo: {
       foto: { img: 'https://images.unsplash.com/photo-1579619002916-88cd4c81a70c?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'CzD0EHabuzE', autor: 'James Frewin' },
       nombre: 'Lomo de cerdo al horno con batata y zanahoria',
-      tipo: 'Cena', tiempo: '45 min',
-      intro: 'Hacé el doble: la mitad es el almuerzo del jueves.',
-      ingredientes: ['800 g de lomo de cerdo', '2 batatas', '4 zanahorias', '1 cebolla', 'Mostaza (1 cda), ajo, romero u orégano, aceite, sal, pimienta'],
+      tipo: 'Almuerzo', tiempo: '45 min en tanda',
+      intro: 'Rinde 3 porciones. Ideal para hacer en una cena y llevar al día siguiente.',
+      ingredientes: ['600 g de lomo de cerdo', '2 batatas', '3 zanahorias', '1 cebolla', 'Mostaza (1 cda), ajo, romero u orégano, aceite, sal, pimienta'],
       pasos: [
-        'Horno a 200 °C.',
-        'Batata y zanahoria en bastones, cebolla en gajos. Aceite y sal en una fuente.',
-        'Untá el lomo con mostaza, ajo, hierbas, sal y pimienta. Sellalo 2 min por lado en sartén bien caliente (opcional, pero queda mucho más rico).',
-        'Lomo arriba de las verduras, al horno 25–30 min. Está listo cuando adentro queda apenas rosado (63 °C si tenés termómetro).',
-        'Reposo 5 min, cortá en medallones. Guardá la mitad para mañana.'
+        'Horno a 200 °C. Batata y zanahoria en bastones, cebolla en gajos, con aceite y sal.',
+        'Untá el lomo con mostaza, ajo, hierbas, sal y pimienta. Sellalo 2 min por lado en sartén bien caliente.',
+        'Lomo arriba de las verduras, 25–30 min. Adentro tiene que quedar apenas rosado.',
+        'Reposo 5 min, cortá en medallones y porcioná con las verduras.'
       ]
-    },
-    'cerdo-sobra': {
-      foto: { img: 'https://images.unsplash.com/photo-1579619002916-88cd4c81a70c?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'CzD0EHabuzE', autor: 'James Frewin' },
-      nombre: 'Lomo de cerdo con batata (lo del miércoles)',
-      tipo: 'Almuerzo', tiempo: '5 min',
-      ingredientes: ['Lomo y verduras guardadas del miércoles', 'Opcional: tomate en rodajas'],
-      pasos: ['Calentá en microondas tapado 2–3 min (o en sartén con una cucharada de agua para que no se seque).', 'Regla del plato: si te falta verdura, sumá tomate.']
     },
     milanesas: {
-      nombre: 'Milanesas de pollo al horno con puré mixto',
-      tipo: 'Cena', tiempo: '40 min',
-      intro: 'Hacé el doble: la mitad de las milanesas es el almuerzo del viernes.',
-      ingredientes: ['1,2 kg de pechuga de pollo (la mitad para el viernes)', '4 huevos', 'Pan rallado (2 tazas)', 'Ajo, perejil, sal', '2 papas', '½ calabaza', 'Manteca, sal, nuez moscada', '2 tomates'],
+      nombre: 'Milanesas de pollo al horno con puré',
+      tipo: 'Almuerzo', tiempo: '40 min en tanda',
+      intro: 'Empanalas el domingo y congelalas crudas: van del freezer al horno sin descongelar (sumá 5 min).',
+      ingredientes: ['800 g de pechuga fileteada', '3 huevos', 'Pan rallado (2 tazas)', 'Ajo, perejil, sal', '2 papas y ½ calabaza para el puré', 'Manteca, nuez moscada'],
       pasos: [
-        'Horno a 200 °C. Fuente con un poco de aceite.',
-        'Cortá las pechugas en filetes finos (o pedilas fileteadas en la carnicería).',
-        'Batí los huevos con ajo, perejil y sal. Pasá cada filete por huevo y después por pan rallado.',
-        'Al horno 10 min, dá vuelta y 8–10 min más hasta que estén doradas.',
-        'Mientras tanto: papa y calabaza en cubos, hervidas juntas 15 min. Pisá con manteca, sal y nuez moscada.',
-        'Servilas con tomate en rodajas. Guardá la mitad de las milanesas y del puré en tuppers para mañana.'
+        'Batí los huevos con ajo, perejil y sal. Pasá cada filete por huevo y por pan rallado.',
+        'Horno a 200 °C en fuente aceitada: 10 min, vuelta y 8–10 min más.',
+        'Puré: papa y calabaza en cubos, hervidas 15 min, pisadas con manteca, sal y nuez moscada.',
+        'Porcioná milanesa + puré en tuppers. Fría también va bien en un sándwich con tomate.'
       ]
     },
-    'milanesa-sobra': {
-      nombre: 'Milanesas con puré (lo del jueves)',
-      tipo: 'Almuerzo', tiempo: '3 min',
-      ingredientes: ['Milanesas y puré guardados del jueves', 'Tomate'],
-      pasos: ['Calentá 2 min en microondas, o la milanesa fría en un sándwich o wrap con tomate si se lleva.', 'Regla del plato: sumá tomate si falta verdura.']
+    tarta: {
+      nombre: 'Tarta de espinaca, cebolla y queso',
+      tipo: 'Almuerzo', tiempo: '1 h en tanda',
+      intro: 'Rinde 6 porciones. 4 días en heladera o freezer en porciones.',
+      ingredientes: ['1 paquete de tapas de tarta (2 tapas)', '2 atados de espinaca o 1 bolsa congelada', '2 cebollas', '4 huevos', '200 g de queso cremoso en cubos', '50 g de queso rallado', 'Sal, pimienta, nuez moscada'],
+      pasos: [
+        'Horno a 200 °C. Cebolla picada en sartén 8 min.',
+        'Sumá la espinaca hasta que se achique. Escurrila bien apretando (si queda agua, la tarta se humedece).',
+        'Mezclá con los huevos batidos, los dos quesos, sal, pimienta y nuez moscada.',
+        'Una tapa en la tartera, el relleno, la otra tapa arriba. Repulgá los bordes y pinchá la tapa.',
+        'Al horno 35–40 min, hasta que esté dorada. Enfriá y cortá en 6.'
+      ]
+    },
+    pastel: {
+      nombre: 'Pastel de papa con calabaza',
+      tipo: 'Almuerzo', tiempo: '1 h en tanda',
+      intro: 'Rinde 5–6 porciones. Se congela muy bien.',
+      ingredientes: ['500 g de carne picada', '1 cebolla, 1 morrón, 1 zanahoria rallada', '1 kg de papa', '½ calabaza', 'Manteca, queso rallado', 'Pimentón dulce, comino (opcional), sal'],
+      pasos: [
+        'Papa y calabaza en cubos, hervidas juntas 20 min.',
+        'Relleno: cebolla y morrón 5 min, carne 10 min, zanahoria, pimentón y sal.',
+        'Pisá papa y calabaza con un poco de manteca y sal.',
+        'En una fuente: relleno abajo, puré arriba, queso rallado.',
+        'Horno fuerte (220 °C) 15 min para gratinar. Enfriá y porcioná.'
+      ]
     },
     bolognesa: {
       foto: { img: 'https://images.unsplash.com/photo-1622973536968-3ead9e780960?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'sA3wymYqyaI', autor: 'Homescreenify' },
-      nombre: 'Fideos con bolognesa mitad carne, mitad lentejas',
-      tipo: 'Cena', tiempo: '35 min',
-      intro: 'Las legumbres de la semana, escondidas en la salsa.',
-      ingredientes: ['300 g de carne picada magra', '1 lata de lentejas (o 150 g secas ya cocidas)', '250 g de fideos (1 puño c/u)', '1 cebolla', '1 zanahoria y 1 zapallito rallados', '1 caja de puré de tomate', 'Ajo, orégano, sal, queso rallado'],
+      nombre: 'Fideos con bolognesa',
+      tipo: 'Almuerzo', tiempo: '35 min',
+      intro: 'La salsa se hace en tanda y se congela en porciones; los fideos se hierven en el momento o se guardan cocidos 3 días.',
+      ingredientes: ['400 g de carne picada magra', '1 cebolla', '1 zanahoria y 1 zapallito rallados', '1 caja de puré de tomate', 'Fideos (1 puño por porción)', 'Ajo, orégano, sal, queso rallado'],
       pasos: [
-        'Picá la cebolla y el ajo. Rallá la zanahoria y el zapallito.',
-        'Sartén con aceite: cebolla 5 min, después la carne hasta que se dore.',
-        'Sumá zanahoria, zapallito y las lentejas enjuagadas. 2 minutos.',
+        'Cebolla y ajo picados 5 min, sumá la carne hasta que se dore.',
+        'Zanahoria y zapallito rallados (se pierden en la salsa) 2 min.',
         'Puré de tomate, orégano, sal y medio vaso de agua. Fuego bajo 15 min.',
-        'Mientras, hervé los fideos. Medida: 125 g por persona en crudo.',
-        'Plato: mucha salsa, fideos medidos, queso rallado.'
+        'Porcioná la salsa. Fideos: 125 g en crudo por persona.'
       ]
     },
-    tortilla: {
-      foto: { img: 'https://images.unsplash.com/photo-1639669794539-952631b44515?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'z4CQtd07u5k', autor: 'blackieshoot' },
-      nombre: 'Tortilla de papa y espinaca al horno',
-      tipo: 'Almuerzo', tiempo: '40 min',
-      ingredientes: ['6 huevos', '2 papas', '1 atado de espinaca (o ½ bolsa congelada)', '1 cebolla', '50 g de queso rallado', 'Sal, pimienta, aceite', 'Tomate para acompañar'],
+    platito: {
+      nombre: 'Platito de Jaz (varias cositas)',
+      tipo: 'Almuerzo', tiempo: '5 min con todo listo',
+      intro: 'Elegí 4 o 5 cositas de las que quedaron listas el domingo. Con legumbres cuenta como su ensalada de la semana.',
+      ingredientes: ['Legumbres: lentejas o porotos (½ taza)', 'Zanahoria rallada o en bastones', 'Tomates cherry', 'Huevo duro', 'Palta (cortada en el momento, con limón)', 'Extras: pollo en tiras, queso en cubos, arroz, choclo'],
       pasos: [
-        'Horno a 180 °C. Papas en cubos chicos, hervidas 8 min.',
-        'Cebolla en sartén 5 min, sumá la espinaca hasta que se achique. Si es congelada, escurrila bien.',
-        'Batí los huevos con queso, sal y pimienta. Mezclá con la papa, la cebolla y la espinaca.',
-        'Fuente aceitada, al horno 20–25 min hasta que el centro esté firme.',
-        'Cortá en 4: dos porciones hoy, dos para picar otro día. Con tomate.'
+        'Combinación 1: lentejas + zanahoria rallada + cherrys + huevo duro + palta.',
+        'Combinación 2: porotos + pollo en tiras + cherrys + queso en cubos + choclo.',
+        'Combinación 3: arroz + huevo duro + palta + zanahoria en bastones + porotos.',
+        'Aliño aparte en un frasquito: aceite de oliva, limón y sal (así no se humedece).'
       ]
     },
-    hamburguesas: {
-      nombre: 'Hamburguesas caseras al plato con verduras al horno',
-      tipo: 'Cena', tiempo: '35 min',
-      ingredientes: ['400 g de carne picada', '1 huevo (opcional)', 'Sal, pimienta, ajo en polvo', '2 rodajas de queso', 'Verduras para el horno: zapallo, zanahoria, cebolla, morrón y 1 papa', 'Lechuga y tomate'],
+    'ensalada-fran': {
+      nombre: 'Ensalada simple (para sumar a cualquier almuerzo)',
+      tipo: 'Almuerzo', tiempo: '3 min',
+      intro: 'Al costado de cualquier almuerzo. Meta: 2 veces por semana.',
+      ingredientes: ['Lechuga lavada', 'Tomate', 'Zanahoria rallada', 'Huevo duro (opcional)', 'Aceite, limón y sal'],
+      pasos: ['Todo ya está listo del domingo: armala en el plato y condimentá en el momento.']
+    },
+
+    // ---------- Cenas rápidas ----------
+    bife: {
+      foto: { img: 'https://images.unsplash.com/photo-1644704265419-96ddaf628e71?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: '7WJV-SDSj6c', autor: 'Clark Douglas' },
+      nombre: 'Bife a la plancha con puré de calabaza y brócoli',
+      tipo: 'Cena', tiempo: '20 min',
+      intro: 'Del freezer: bolsa de bifes (a la heladera la noche anterior), calabaza en cubos y brócoli.',
+      ingredientes: ['2 bifes (400 g)', 'Calabaza en cubos', 'Brócoli', 'Manteca, sal, pimienta, nuez moscada'],
       pasos: [
-        'Horno a 200 °C. Verduras en cubos con aceite y sal, 30 min (1 parte papa, 3 partes el resto).',
-        'Mezclá la carne con sal, pimienta y ajo. Formá 2–4 medallones de 2 cm, con un hueco en el centro para que no se inflen.',
-        'Plancha muy caliente: 3–4 min por lado. Queso arriba el último minuto.',
-        'Al plato con las verduras, lechuga y tomate. Sin pan es la versión del desafío; si van con pan, que sea el puño de carbo y se saca la papa.'
+        'Calabaza congelada: microondas tapada 8–10 min. Pisala con manteca, sal y nuez moscada.',
+        'Brócoli congelado: 4 min al vapor o en sartén con un poco de agua.',
+        'Plancha bien caliente: bifes secos con papel, sal, 3–4 min por lado.',
+        'Reposo 3 min antes de cortar.'
       ]
     },
-    libre: {
-      nombre: 'Almuerzo libre',
-      tipo: 'Almuerzo', tiempo: '—',
-      ingredientes: [],
-      pasos: ['Lo que quieran, respetando la regla del plato: media verdura, un cuarto de proteína, un cuarto de carbos.', 'Sin bebidas con azúcar ni alcohol.']
+    merluza: {
+      foto: { img: 'https://images.unsplash.com/photo-1793691279531-f4a9873169d5?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'gJCJreBH0kM', autor: 'Murat Ts.' },
+      nombre: 'Merluza al horno con papas y zapallitos',
+      tipo: 'Cena', tiempo: '30 min',
+      ingredientes: ['500 g de filet de merluza (puede ir congelado)', '2 papas', '2 zapallitos', '1 limón, ajo, perejil, aceite, sal'],
+      pasos: [
+        'Horno a 200 °C. Papas en rodajas finas con aceite y sal: 15 min solas.',
+        'Sumá zapallitos en medias lunas y los filetes arriba, con ajo, limón, aceite y sal.',
+        '12–15 min más (18 si el pescado iba congelado), hasta que se separe en lascas.'
+      ]
+    },
+    salteado: {
+      nombre: 'Salteado de pollo o carne con verduras y arroz',
+      tipo: 'Cena', tiempo: '15 min',
+      intro: 'Del freezer: tiras de pollo o carne y el mix de salteado. El arroz, del domingo.',
+      ingredientes: ['400 g de tiras de pollo o carne', '1 bolsa de mix de salteado (cebolla, morrón, zanahoria, zapallito)', '2 cdas de salsa de soja', '1 diente de ajo', 'Arroz cocido (1 puño c/u)'],
+      pasos: [
+        'Sartén o wok muy caliente con un poco de aceite. Tiras 4–5 min, hasta dorar. Sacalas.',
+        'Verduras (pueden ir congeladas) 5 min a fuego fuerte, que queden crocantes.',
+        'Volvé la carne, sumá ajo picado y la soja. 1 minuto.',
+        'Al plato con el arroz calentado.'
+      ]
+    },
+    fajitas: {
+      nombre: 'Fajitas de pollo con palta',
+      tipo: 'Cena', tiempo: '20 min',
+      intro: 'Del freezer: tiras de pollo y el mix de fajitas. Sin picante.',
+      ingredientes: ['400 g de tiras de pollo', '1 bolsa de mix de fajitas (cebolla y morrón)', '6 tortillas', 'Queso cremoso', '1 palta, ½ limón', 'Pimentón dulce, comino (opcional), sal'],
+      pasos: [
+        'Pollo con pimentón, comino y sal. Sartén caliente 5–6 min, sacalo.',
+        'Cebolla y morrón 5 min en la misma sartén. Volvé el pollo.',
+        'Palta pisada con limón y sal.',
+        'Tortillas calientes, relleno, queso y palta. La regla del plato: 2–3 fajitas cada uno.'
+      ]
+    },
+    'pollo-plancha': {
+      nombre: 'Pollo a la plancha con puré de batata y verduras',
+      tipo: 'Cena', tiempo: '20 min',
+      intro: 'Del freezer: pechugas fileteadas (a la heladera la noche anterior) y mix de salteado.',
+      ingredientes: ['2 pechugas fileteadas', '2 batatas', '1 bolsa de mix de salteado', 'Limón, orégano, aceite, sal'],
+      pasos: [
+        'Batata en cubos: hervida 12 min o microondas tapada 8 min. Pisala con sal.',
+        'Pechugas con limón, orégano y sal. Plancha caliente 3–4 min por lado.',
+        'Verduras salteadas 6 min a fuego fuerte.'
+      ]
+    },
+    'fideos-brocoli': {
+      nombre: 'Fideos con brócoli y pollo',
+      tipo: 'Cena', tiempo: '20 min',
+      intro: 'Del freezer: cubos de pollo y brócoli.',
+      ingredientes: ['250 g de fideos cortos', '1 brócoli (o 1 bolsa congelada)', '300 g de pollo en cubos', '2 dientes de ajo', 'Aceite de oliva, queso rallado, limón, sal'],
+      pasos: [
+        'Hervé los fideos. En los últimos 3 minutos sumá el brócoli a la misma olla.',
+        'Mientras, sartén con aceite: pollo 6–8 min hasta dorar, y el ajo picado el último minuto.',
+        'Escurrí guardando un cucharón del agua. Mezclá todo con ese agua, aceite de oliva y queso rallado.',
+        'Unas gotas de limón al servir.'
+      ]
     }
   },
 
@@ -271,10 +342,10 @@ window.DATA = {
   },
 
   super: [
-    { cat: 'Proteínas', items: ['Pollo: 1 kg para el meal prep + 1,2 kg de pechuga para milanesas', 'Carne picada magra · 1 kg', 'Bife (nalga, cuadril o bife de chorizo) · 500 g', 'Lomo de cerdo · 800 g', 'Merluza en filet · 500 g', 'Huevos · 1 maple de 30', 'Lentejas · 1 paquete chico o 2 latas'] },
-    { cat: 'Lácteos', items: ['Yogur natural sin azúcar · 8 potes', 'Queso cremoso o de barra · 400 g', 'Manteca', 'Queso rallado'] },
-    { cat: 'Carbohidratos', items: ['Arroz · 1 kg', 'Papa · 1,5 kg', 'Batata · 1 kg', 'Fideos · 500 g', 'Tortillas para wraps · 8', 'Pan rallado · 2 tazas'] },
-    { cat: 'Verduras', items: ['Calabaza o zapallo anco · 2', 'Zanahoria · 1 kg', 'Cebolla · 1,5 kg', 'Morrón · 4', 'Zapallitos · 1 kg', 'Brócoli · 2', 'Espinaca · 1 atado o bolsa congelada', 'Tomate · 1 kg', 'Lechuga · 1', 'Ajo', 'Limones · 2'] },
-    { cat: 'Despensa', items: ['Tuppers para 4 bowls + papel aluminio', 'Puré de tomate · 2 cajas', 'Aceite de oliva', 'Sal y pimienta', 'Orégano y pimentón dulce', 'Mostaza', 'Nuez moscada', 'Yerba y café', 'Dulce de arándanos'] }
+    { cat: 'Proteínas', items: ['Pollo (pechuga y muslo) · 2,5 kg — bowls, milanesas y cenas', 'Carne picada magra · 1,2 kg — wraps, pastel y bolognesa', 'Bife o carne para tiras · 800 g', 'Lomo de cerdo · 600 g', 'Merluza en filet · 500 g', 'Huevos · 1 maple de 30', 'Lentejas · 1 lata', 'Porotos · 1 lata'] },
+    { cat: 'Lácteos', items: ['Yogur natural sin azúcar · 8 potes', 'Queso cremoso o de barra · 500 g', 'Queso rallado', 'Manteca'] },
+    { cat: 'Carbohidratos', items: ['Arroz · 1 kg', 'Papa · 2 kg', 'Batata · 1 kg', 'Fideos · 1 kg (largos y cortos)', 'Tortillas · 16', 'Tapas de tarta · 1 paquete', 'Pan rallado · 2 tazas', 'Choclo · 1 lata (platitos)'] },
+    { cat: 'Verduras', items: ['Calabaza o zapallo anco · 2', 'Zanahoria · 1,5 kg', 'Cebolla · 2 kg', 'Morrón · 5', 'Zapallitos · 1 kg', 'Brócoli · 3', 'Espinaca · 2 atados o 1 bolsa congelada', 'Tomate · 1 kg', 'Tomates cherry · 2 bandejas', 'Lechuga · 1', 'Palta · 3', 'Ajo', 'Limones · 3'] },
+    { cat: 'Despensa', items: ['Bolsas tipo zip para freezer', 'Tuppers individuales · 8–10', 'Film y papel aluminio', 'Puré de tomate · 1 caja', 'Salsa de soja', 'Mostaza', 'Aceite de oliva', 'Sal, pimienta, orégano, pimentón dulce, nuez moscada', 'Yerba, café y dulce de arándanos'] }
   ]
 };
