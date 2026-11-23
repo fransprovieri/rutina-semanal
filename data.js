@@ -260,7 +260,6 @@ window.DATA = {
       ]
     },
     merluza: {
-      foto: { img: 'https://images.unsplash.com/photo-1793691279531-f4a9873169d5?ixlib=rb-4.1.0&fm=jpg&crop=entropy&cs=srgb&q=70', id: 'gJCJreBH0kM', autor: 'Murat Ts.' },
       nombre: 'Milanesas de merluza al horno con papas y zapallitos',
       tipo: 'Cena', tiempo: '30 min',
       ingredientes: ['500 g de milanesas de merluza (pueden ir congeladas)', '2 papas', '2 zapallitos', '1 limón, aceite, sal'],
