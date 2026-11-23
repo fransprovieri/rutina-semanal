@@ -27,15 +27,10 @@ h1, h2, h3 { font-family: 'Inter Tight', Inter, sans-serif; margin: 0; font-weig
 p { margin: 0; }
 em, .serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: 0; }
 
-/* Cielo de fondo, fijo */
-.sky { position: fixed; inset: 0; z-index: -1; overflow: hidden;
-  background:
-    radial-gradient(60% 40% at 20% 8%, rgba(36, 72, 120, 0.85), transparent 70%),
-    radial-gradient(70% 45% at 85% 30%, rgba(120, 170, 225, 0.9), transparent 70%),
-    radial-gradient(60% 40% at 30% 70%, rgba(176, 222, 252, 0.95), transparent 70%),
-    radial-gradient(80% 40% at 70% 95%, rgba(150, 165, 180, 0.9), transparent 70%),
-    linear-gradient(180deg, #33608F 0%, #6C9CD0 35%, #A9D3F3 65%, #A3B4C3 100%); }
-.sky::after { content: ''; position: absolute; inset: -20%; background: radial-gradient(40% 25% at 60% 55%, rgba(255,255,255,0.35), transparent 70%); filter: blur(20px); }
+/* Cielo de fondo, fijo: foto de Unsplash muy desenfocada */
+.sky { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: linear-gradient(180deg, #2E63A3 0%, #5C9AD6 45%, #A9CFEF 100%); }
+.sky::before { content: ''; position: absolute; inset: -12%; background: url("https://images.unsplash.com/photo-1626166466949-3e027ee4dac0?ixlib=rb-4.1.0&q=70&fm=jpg&crop=entropy&cs=srgb&w=1080") center / cover no-repeat; filter: blur(42px) saturate(115%); transform: scale(1.1); }
+.sky::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(25, 55, 95, 0.35) 0%, rgba(40, 90, 150, 0.08) 40%, rgba(120, 135, 150, 0.25) 100%); }
 
 .app { max-width: 640px; margin: 0 auto; padding: calc(env(safe-area-inset-top) + 14px) 18px calc(var(--nav-h) + env(safe-area-inset-bottom) + 40px); }
 

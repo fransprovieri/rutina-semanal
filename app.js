@@ -285,6 +285,7 @@
         <div class="card" style="display:flex;flex-direction:column;gap:10px">
           <div class="field"><label for="startEdit">Fecha del día 1</label><input id="startEdit" type="date" value="${S.start || ''}" data-action-change="startEdit"></div>
           <p class="muted small">Todo se guarda en este dispositivo. Las actualizaciones de la app no lo borran; lo único que lo borra es eliminar el ícono de inicio o los datos de Safari.</p>
+          <p class="muted small">Foto del fondo: <a href="https://unsplash.com/photos/WVtzXcZbGpI" target="_blank" rel="noopener" style="color:inherit">yujeong Huh en Unsplash</a>.</p>
           <div class="btn-row"><button class="btn ghost" data-action="exportar">Guardar copia</button>
             <label class="btn ghost" style="display:flex;align-items:center;justify-content:center;cursor:pointer">Restaurar copia<input type="file" accept="application/json,.json" data-import hidden></label></div>
         </div></div>`);
