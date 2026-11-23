@@ -18,7 +18,7 @@ window.DATA = {
     { id: 'plato', titulo: 'Plato con la mano', detalle: 'Proteína 1–2 palmas · verdura 2 puños · carbos 1 puño · grasa 1 pulgar. Verdura y proteína primero, carbos al final.' },
     { id: 'caminata', titulo: 'Caminata post-cena', detalle: '10–15 min después de cenar. Después del almuerzo, con 5 min alcanza.' },
     { id: 'pasos', titulo: 'Pasos del día', detalle: 'Semana 1: tu promedio + 1.000. Semana 2: 7.000–8.000.', tipo: 'numero' },
-    { id: 'entreno', titulo: 'Entreno del día', detalle: 'Correr lun · mié · vie. Fuerza mar · jue · sáb. Domingo libre.' },
+    { id: 'entreno', titulo: 'Entrenamiento del día', detalle: 'Lo que te toca hoy (ver Entrenamiento).' },
     { id: 'sueno', titulo: 'Dormí 7–8 h', detalle: 'Despertador a la misma hora, luz natural al levantarte, pantallas afuera 1 h antes.' },
     { id: 'cocina', titulo: 'Cocina cerrada', detalle: 'Después de cenar no se come más.' }
   ],
@@ -30,14 +30,18 @@ window.DATA = {
     { hora: '13:00', titulo: 'Almuerzo', detalle: 'Verdura y proteína primero, carbos al final.', tipo: 'comida' },
     { hora: '13:30', titulo: 'Caminata corta', detalle: '5 minutos alcanzan.', tipo: 'movimiento' },
     { hora: '14:00', titulo: 'Bloque de trabajo', detalle: 'Pausa de movimiento cada hora.', tipo: 'trabajo' },
-    { hora: '18:30', titulo: 'Entreno', detalle: 'Fuerza o correr, 15 min.', tipo: 'movimiento' },
+    { hora: '18:30', titulo: 'Entrenamiento', detalle: 'Fuerza, correr o pilates.', tipo: 'movimiento' },
     { hora: '20:30', titulo: 'Cena', detalle: 'Última comida del día.', tipo: 'comida' },
     { hora: '21:00', titulo: 'Caminata post-cena', detalle: '10–15 min. Después, la cocina cierra.', tipo: 'movimiento' },
     { hora: '22:30', titulo: 'Pantallas afuera', detalle: 'Leer, música, dejar listo el día siguiente.', tipo: 'descanso' },
     { hora: '23:30', titulo: 'A dormir', detalle: '8 horas hasta el despertador.', tipo: 'descanso' }
   ],
 
-  entreno: { 1: 'correr', 2: 'fuerza', 3: 'correr', 4: 'fuerza', 5: 'correr', 6: 'fuerza', 0: 'libre' },
+  // 0 = domingo ... 6 = sábado. Los días que Jaz no tiene pilates entrenan juntos.
+  entreno: {
+    fran: { 1: 'correr', 2: 'fuerza', 3: 'correr', 4: 'fuerza', 5: 'correr', 6: 'fuerza', 0: 'libre' },
+    jazmin: { 1: 'pilates', 2: 'fuerza', 3: 'pilates', 4: 'fuerza', 5: 'correr', 6: 'fuerza', 0: 'libre' }
+  },
 
   // Nada es obligatorio: son listas para elegir día a día.
   // Almuerzos listos: se cocinan en tanda (domingo o la noche anterior) y se calientan.

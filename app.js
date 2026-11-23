@@ -136,14 +136,18 @@
         <button class="icon-btn" data-action="comidaDel" data-id="${x.id}" aria-label="Borrar">${icon.close}</button></div>`).join('')
       : '<div class="row"><span class="grow"><span class="sub">Todavía no registraste nada. Es opcional: sirve para acordarse qué funcionó.</span></span></div>';
 
-    const e = D.entreno[d];
+    const e = D.entreno[S.user][d];
+    const otro = D.usuarios.find((u) => u.id !== S.user);
+    const juntos = e !== 'libre' && e !== 'pilates' && D.entreno[otro.id][d] === e ? ` <span class="tag green">Con ${esc(otro.nombre)}</span>` : '';
     let entreno;
     if (e === 'fuerza') {
       entreno = `<div class="card" style="display:flex;flex-direction:column;gap:10px">
-        <div><b style="font-size:17px">Fuerza · 15 min</b><p class="muted small">Calentamiento, 2 vueltas de 6 ejercicios y final. ${semana2() ? '45/15 s' : '40/20 s'}.</p></div>
+        <div><b style="font-size:17px">Fuerza · 15 min</b>${juntos}<p class="muted small">Calentamiento, 2 vueltas de 6 ejercicios y final. ${semana2() ? '45/15 s' : '40/20 s'}.</p></div>
         <button class="btn green" data-action="startTimer">Empezar circuito con timer</button></div>`;
     } else if (e === 'correr') {
-      entreno = `<div class="card"><b style="font-size:17px">Correr · 15 min</b><p class="muted small">${esc(D.correr.tips[0])}</p></div>`;
+      entreno = `<div class="card"><b style="font-size:17px">Correr · 15 min</b>${juntos}<p class="muted small">${esc(D.correr.tips[0])}</p></div>`;
+    } else if (e === 'pilates') {
+      entreno = `<div class="card"><b style="font-size:17px">Pilates</b><p class="muted small">Tu clase de hoy es tu entrenamiento del día. Tildalo en el checklist cuando vuelvas.</p></div>`;
     } else {
       entreno = `<div class="card"><b style="font-size:17px">Día libre</b><p class="muted small">Caminata tranquila si tenés ganas. Hoy toca preparar la comida de la semana.</p></div>`;
     }
@@ -171,7 +175,7 @@
         <button class="link-row" data-tab="comidas" style="padding:0 6px">Ver opciones de la semana ${icon.chev}</button>
       </div>
       <div class="section" style="order:5">
-        <div class="section-title"><h2>Entreno</h2></div>
+        <div class="section-title"><h2>Entrenamiento</h2></div>
         ${entreno}
       </div>
       <details class="card" style="order:6"><summary>Cómo se ve el día ${icon.chev}</summary><div class="sched">${sched}</div></details>`,
@@ -226,15 +230,16 @@
     const w = semana2() ? 45 : 40, r = 60 - w;
     const ej = F.ejercicios.map((e, i) => `<div class="row"><span class="fig-box">${figura(e.fig)}</span><span class="grow"><b>${esc(e.nombre)}</b><span class="sub">${esc(e.tip)}</span></span></div>`).join('');
     const hd = parse(hoy()).getDay();
-    const sem = ORDEN_SEMANA.map((d) => {
-      const e = D.entreno[d];
-      const letra = e === 'fuerza' ? 'F' : e === 'correr' ? 'C' : '–';
-      const nombre = e === 'fuerza' ? 'Fuerza' : e === 'correr' ? 'Correr' : 'Libre';
-      return `<div class="wk-day ${d === hd ? 'is-today' : ''}"><span class="wk-lbl">${DIAS_CORTOS[d][0]}</span><span class="wk-dot ${e}" title="${nombre}" aria-label="${DIAS[d]}: ${nombre}">${letra}</span></div>`;
-    }).join('');
+    const LET = { fuerza: 'F', correr: 'C', pilates: 'P', libre: '–' };
+    const NOM = { fuerza: 'Fuerza', correr: 'Correr', pilates: 'Pilates', libre: 'Libre' };
+    let sem = '<div class="wk2"><span></span>' + ORDEN_SEMANA.map((d) => `<span class="wk-lbl ${d === hd ? 'is-today' : ''}">${DIAS_CORTOS[d][0]}</span>`).join('');
+    D.usuarios.forEach((u) => {
+      sem += `<span class="wk-name">${esc(u.nombre)}</span>` + ORDEN_SEMANA.map((d) => { const e = D.entreno[u.id][d]; return `<span class="wk-cell ${d === hd ? 'is-today' : ''}"><span class="wk-dot ${e}" title="${NOM[e]}" aria-label="${esc(u.nombre)}, ${DIAS[d]}: ${NOM[e]}">${LET[e]}</span></span>`; }).join('');
+    });
+    sem += '<span class="wk-name small muted">Juntos</span>' + ORDEN_SEMANA.map((d) => { const a1 = D.entreno.fran[d], a2 = D.entreno.jazmin[d]; return `<span class="wk-cell">${a1 === a2 && a1 !== 'libre' ? '<span class="wk-juntos" aria-label="Juntos">●</span>' : ''}</span>`; }).join('') + '</div>';
     const semana = `<div class="section"><div class="section-title"><h2>La semana</h2></div>
-        <div class="card"><div class="wk">${sem}</div>
-          <div class="wk-legend"><span><i class="wk-dot fuerza">F</i>Fuerza</span><span><i class="wk-dot correr">C</i>Correr</span><span><i class="wk-dot libre">–</i>Libre</span></div></div></div>`;
+        <div class="card">${sem}
+          <div class="wk-legend"><span><i class="wk-dot fuerza">F</i>Fuerza</span><span><i class="wk-dot correr">C</i>Correr</span><span><i class="wk-dot pilates">P</i>Pilates</span><span><i class="wk-dot libre">–</i>Libre</span></div></div></div>`;
     return cols(semana + `<div class="section">
         <div class="section-title"><h2>Fuerza · 15 min</h2><span>${w}/${r} s</span></div>
         <div class="card"><b>Cómo es</b><p class="muted" style="margin-top:4px">2 min de ${esc(F.calentamiento.nombre.toLowerCase())} → ${F.vueltas} vueltas de los 6 ejercicios (${w} s de trabajo, ${r} s de descanso) → 30 s de plancha y 30 s de soga.</p></div>
@@ -523,7 +528,7 @@
   });
 
   // ---------- Render ----------
-  const TABS = [['hoy', 'Hoy'], ['comidas', 'Comidas'], ['entreno', 'Entreno'], ['super', 'Súper'], ['progreso', 'Progreso']];
+  const TABS = [['hoy', 'Hoy'], ['comidas', 'Comidas'], ['entreno', 'Entrenamiento'], ['super', 'Súper'], ['progreso', 'Progreso']];
   function render() {
     const vistas = { hoy: vistaHoy, comidas: vistaComidas, entreno: vistaEntreno, super: vistaSuper, progreso: vistaProgreso };
     const users = D.usuarios.map((u) => `<button data-action="user" data-id="${u.id}" aria-pressed="${S.user === u.id}">${esc(u.nombre)}</button>`).join('');
