@@ -61,28 +61,31 @@
     const n = diaDesafio(f);
     const c = peekChecks(S.user, f);
     const nombre = D.usuarios.find((u) => u.id === S.user).nombre;
+    const hello = `<div class="hello"><h1>hola, <em>${esc(nombre.toLowerCase())}</em></h1><p>${esc(fechaLarga(f))}${f === hoy() ? ' · hoy' : ''}</p></div>`;
     let hero;
     if (!S.start) {
-      hero = `<div class="card dark hero">
-        <span class="eyebrow">Antes de arrancar</span>
-        <h2 style="font-size:28px">¿Cuándo empiezan?</h2>
+      hero = `<div class="card hero">
+        <h2><em>desafío</em> 14 días</h2>
         <p class="muted">Elegí el día 1. Lo pueden cambiar después en Progreso.</p>
         <div class="field"><input type="date" id="startInput" value="${hoy()}" aria-label="Fecha de inicio"></div>
-        <button class="btn light" data-action="setStart">Empezar el desafío</button>
+        <button class="btn" data-action="setStart">Empezar</button>
       </div>`;
     } else {
-      const pct = n === null ? 0 : Math.max(0, Math.min(14, n)) / 14 * 100;
-      const label = n < 1 ? `Faltan ${1 - n} día${1 - n === 1 ? '' : 's'}` : n > 14 ? 'Desafío terminado' : `Día ${n} de 14`;
-      hero = `<div class="card dark hero">
+      const nn = Math.max(0, Math.min(14, n));
+      const label = n < 1 ? `faltan ${1 - n} día${1 - n === 1 ? '' : 's'}` : n > 14 ? 'terminado' : `${n} <span class="muted" style="font-size:22px">de 14</span>`;
+      hero = `<div class="card hero">
         <div class="hero-day">
-          <div><span class="eyebrow">${esc(fechaLarga(f))}${f === hoy() ? ' · hoy' : ''}</span><h2>${label}</h2></div>
+          <h2 style="white-space:nowrap"><em>día</em> ${label}</h2>
           <div class="datenav">
             <button class="icon-btn" data-action="prevDay" aria-label="Día anterior">${icon.left}</button>
             <button class="icon-btn" data-action="nextDay" aria-label="Día siguiente">${icon.right}</button>
           </div>
         </div>
-        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="14" aria-valuenow="${Math.max(0, Math.min(14, n))}"><div style="width:${pct}%"></div></div>
-        ${f !== hoy() ? '<button class="btn light" data-action="goToday">Volver a hoy</button>' : ''}
+        <p style="font-size:17px"><b style="font-weight:500">${Math.round(nn / 14 * 100)}%</b> <span class="muted">del desafío completado</span></p>
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="14" aria-valuenow="${nn}"><div style="width:${nn / 14 * 100}%"></div></div>
+        <div class="kv"><span>Termina</span><span>${esc(fechaLarga(addDays(S.start, 13)))}</span></div>
+        <div class="hr"></div>
+        ${f !== hoy() ? `<button class="link-row" data-action="goToday">Volver a hoy ${icon.chev}</button>` : `<button class="link-row" data-tab="progreso">Progreso y medidas ${icon.chev}</button>`}
       </div>`;
     }
 
@@ -122,18 +125,21 @@
 
     const sched = D.horario.map((h) => `<div><span class="t">${h.hora}</span><span class="c" style="background:${tipoColor[h.tipo]}"></span><span><b>${esc(h.titulo)}</b> <span class="muted">· ${esc(h.detalle)}</span></span></div>`).join('');
 
-    return `${hero}
-      <div class="section" style="margin-top:22px">
-        <div class="section-title"><h2>Checklist de ${esc(nombre)}</h2><span>${hechos(c)}/${D.habitos.length}</span></div>
-        ${items}
-        <div class="row"><span class="grow"><b>Energía</b><span class="sub">Del 1 al 5, ¿cómo te sentiste hoy?</span></span></div>
-        <div class="scale" style="justify-content:flex-end">${energia}</div>
+    return `${hello}${hero}
+      <div class="section" style="margin-top:18px">
+        <div class="section-title"><h2>Checklist</h2><span>${hechos(c)}/${D.habitos.length}</span></div>
+        <div class="group">${items}
+          <div class="row"><span class="box" style="border-style:dashed"></span><span class="grow"><b>Energía</b><span class="sub">Del 1 al 5, ¿cómo te sentiste hoy?</span></span></div>
+          <div class="scale-row"><div class="scale">${energia}</div></div>
+        </div>
       </div>
       <div class="section">
         <div class="section-title"><h2>Comidas</h2><span>${DIAS[d]}</span></div>
+        <div class="group">
         ${comida('Desayuno', desayunoDe(f))}
         ${comida('Almuerzo', m.almuerzo)}
         ${comida(m.cena === 'mealprep' ? 'Preparación' : 'Cena', m.cena)}
+        </div>
       </div>
       <div class="section">
         <div class="section-title"><h2>Entreno</h2></div>
@@ -149,8 +155,8 @@
     let body;
     if (UI.comidasVista === 'semana') {
       const hd = parse(hoy()).getDay();
-      body = `<button class="row" data-action="receta" data-id="mealprep" style="background:var(--green-soft);border-color:#BFD6C7">
-          <span class="grow"><span class="eyebrow">Domingo</span><b>Meal prep: pollo, arroz, verduras y huevos</b><span class="sub">1 h 15 min · resuelve lunes a miércoles</span></span><span class="chev">${icon.chev}</span></button>
+      body = `<button class="row card dark" data-action="receta" data-id="mealprep" style="padding:20px 24px">
+          <span class="grow"><span class="eyebrow"><em style="font-size:18px;color:var(--ink)">domingo</em></span><b>Meal prep: pollo, arroz, verduras y huevos</b><span class="sub">1 h 15 min · resuelve lunes a miércoles</span></span><span class="chev">${icon.chev}</span></button>
         <div class="card" style="display:grid;gap:4px"><b>Desayunos</b>
           <button class="meal" data-action="receta" data-id="desayuno-a"><span class="lbl">Día impar</span><span>${esc(D.recetas['desayuno-a'].nombre.split('· ')[1])}</span>${icon.chev}</button>
           <button class="meal" data-action="receta" data-id="desayuno-b"><span class="lbl">Día par</span><span>${esc(D.recetas['desayuno-b'].nombre.split('· ')[1])}</span>${icon.chev}</button></div>` +
@@ -166,8 +172,8 @@
       const grupos = {};
       Object.entries(D.recetas).forEach(([id, r]) => { (grupos[r.tipo] = grupos[r.tipo] || []).push([id, r]); });
       body = ['Preparación', 'Desayuno', 'Almuerzo', 'Cena'].filter((g) => grupos[g]).map((g) =>
-        `<div class="section-title" style="padding-top:6px"><h2 style="font-size:17px">${g}</h2></div>` +
-        grupos[g].map(([id, r]) => `<button class="row" data-action="receta" data-id="${id}"><span class="grow"><b>${esc(r.nombre)}</b><span class="sub">${esc(r.tiempo)}</span></span><span class="chev">${icon.chev}</span></button>`).join('')
+        `<div class="section-title" style="padding-top:6px"><h2 style="font-size:18px">${g}</h2></div><div class="group flat">` +
+        grupos[g].map(([id, r]) => `<button class="row" data-action="receta" data-id="${id}"><span class="grow"><b>${esc(r.nombre)}</b><span class="sub">${esc(r.tiempo)}</span></span><span class="chev">${icon.chev}</span></button>`).join('') + '</div>'
       ).join('');
     }
     return `<div class="section"><div class="section-title"><h2>Comidas</h2></div>${seg}${body}</div>
@@ -195,13 +201,13 @@
       <div class="section">
         <div class="section-title"><h2>Fuerza · 15 min</h2><span>${w}/${r} s</span></div>
         <div class="card"><b>Cómo es</b><p class="muted" style="margin-top:4px">2 min de ${esc(F.calentamiento.nombre.toLowerCase())} → ${F.vueltas} vueltas de los 6 ejercicios (${w} s de trabajo, ${r} s de descanso) → 30 s de plancha y 30 s de soga.</p></div>
-        ${ej}
-        <p class="muted small">${esc(F.progresion)}</p>
+        <div class="group">${ej}</div>
+        <p class="muted small" style="padding:0 6px">${esc(F.progresion)}</p>
         <button class="btn green" data-action="startTimer">Empezar circuito con timer</button>
       </div>
       <div class="section">
         <div class="section-title"><h2>Correr · ${esc(D.correr.duracion)}</h2></div>
-        ${D.correr.tips.map((t) => `<div class="row"><span class="grow"><span>${esc(t)}</span></span></div>`).join('')}
+        <div class="group flat">${D.correr.tips.map((t) => `<div class="row"><span class="grow"><span style="font-size:16px">${esc(t)}</span></span></div>`).join('')}</div>
       </div>`;
   }
 
@@ -210,14 +216,12 @@
     const marcados = Object.values(S.super).filter(Boolean).length;
     const item = (key, txt, extra) => {
       const on = !!S.super[key];
-      return `<div style="display:flex;gap:6px;align-items:stretch">
-        <button class="row check ${on ? 'on' : ''}" data-action="superToggle" data-key="${esc(key)}" aria-pressed="${on}" style="min-height:50px">
-          <span class="box">${icon.check}</span><span class="grow"><b style="font-weight:500;font-size:15px">${esc(txt)}</b></span></button>
-        ${extra ? `<button class="icon-btn" style="height:auto" data-action="superDel" data-key="${esc(key)}" aria-label="Borrar ${esc(txt)}">${icon.close}</button>` : ''}
-      </div>`;
+      const b = `<button class="row check ${on ? 'on' : ''}" data-action="superToggle" data-key="${esc(key)}" aria-pressed="${on}" style="min-height:56px">
+          <span class="box">${icon.check}</span><span class="grow"><b style="font-size:16px">${esc(txt)}</b></span></button>`;
+      return extra ? `<div class="row" style="padding:0 16px 0 0">${b}<button class="icon-btn" data-action="superDel" data-key="${esc(key)}" aria-label="Borrar ${esc(txt)}">${icon.close}</button></div>` : b;
     };
-    const cats = D.super.map((c) => `<div class="super-cat"><h3>${esc(c.cat)}</h3>${c.items.map((t) => item(c.cat + '|' + t, t)).join('')}</div>`).join('');
-    const extras = S.extras.length ? `<div class="super-cat"><h3>Agregados</h3>${S.extras.map((t) => item('extra|' + t, t, true)).join('')}</div>` : '';
+    const cats = D.super.map((c) => `<div class="super-cat"><h3>${esc(c.cat)}</h3><div class="group">${c.items.map((t) => item(c.cat + '|' + t, t)).join('')}</div></div>`).join('');
+    const extras = S.extras.length ? `<div class="super-cat"><h3>Agregados</h3><div class="group">${S.extras.map((t) => item('extra|' + t, t, true)).join('')}</div></div>` : '';
     return `<div class="section">
         <div class="section-title"><h2>Lista del súper</h2><span>${marcados}/${total}</span></div>
         <p class="muted small">Una semana, para dos. Tildá lo que ya tienen en casa o lo que ya está en el carrito.</p>
@@ -254,7 +258,7 @@
     const nombre = D.usuarios.find((x) => x.id === u).nombre;
 
     return `<div class="card dark" style="display:flex;flex-direction:column;gap:8px;margin-bottom:22px">
-        <span class="eyebrow">El objetivo</span><h2 style="font-size:26px">${esc(D.objetivo.titulo)}</h2>
+        <span class="eyebrow"><em style="font-size:20px;color:var(--ink)">el objetivo</em></span><h2 style="font-size:28px">${esc(D.objetivo.titulo)}</h2>
         <p class="muted">${esc(D.objetivo.texto)}</p><p><b>Meta:</b> ${esc(D.objetivo.meta)}</p></div>
       <div class="section"><div class="section-title"><h2>Los 14 días</h2></div><div class="card">${grid}</div></div>
       <div class="section">
@@ -271,7 +275,7 @@
           ${ratio ? `<p class="small">Cintura / altura: <b>${ratio}</b> ${ratio < 0.5 ? '· por debajo de 0,5 ✓' : '· la meta es menos de 0,5'}</p>` : ''}
         </div>
       </div>
-      <div class="section"><div class="section-title"><h2>Los 7 hábitos</h2></div>${habitos}</div>
+      <div class="section"><div class="section-title"><h2>Los 7 hábitos</h2></div><div class="group">${habitos}</div></div>
       <div class="section"><div class="section-title"><h2>Ajustes</h2></div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px">
           <div class="field"><label for="startEdit">Fecha del día 1</label><input id="startEdit" type="date" value="${S.start || ''}" data-action-change="startEdit"></div>
@@ -396,7 +400,8 @@
   function render() {
     const vistas = { hoy: vistaHoy, comidas: vistaComidas, entreno: vistaEntreno, super: vistaSuper, progreso: vistaProgreso };
     const users = D.usuarios.map((u) => `<button data-action="user" data-id="${u.id}" aria-pressed="${S.user === u.id}">${esc(u.nombre)}</button>`).join('');
-    $('#app').innerHTML = `<header class="top"><h1>Rutina semanal</h1><div class="users" role="group" aria-label="Quién usa la app">${users}</div></header>
+    const ini = D.usuarios.find((u) => u.id === S.user).nombre[0];
+    $('#app').innerHTML = `<header class="top"><div class="users" role="group" aria-label="Quién usa la app">${users}</div><div class="avatar" aria-hidden="true">${esc(ini)}</div></header>
       <main>${vistas[S.tab]()}</main>`;
     $('#nav').innerHTML = `<div class="nav-in">${TABS.map(([id, l]) => `<button data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}>${icon[id]}<span>${l}</span></button>`).join('')}</div>`;
   }

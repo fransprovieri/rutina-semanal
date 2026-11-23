@@ -1,5 +1,5 @@
 // Cache simple para que la app abra sin conexión. Subí VERSION cuando cambies archivos.
-const VERSION = 'rutina-v1';
+const VERSION = 'rutina-v2';
 const FILES = ['./', 'index.html', 'styles.css', 'app.js', 'data.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-180.png', 'icons/icon-192.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(VERSION).then((c) => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', (e) => {
