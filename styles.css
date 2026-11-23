@@ -228,12 +228,13 @@ details.card[open] summary { margin-bottom: 14px; }
   .sky::before { filter: blur(80px) saturate(55%) hue-rotate(8deg) brightness(1.15); }
   .sky-2 { filter: blur(45px) saturate(40%) brightness(1.15); }
   .app { max-width: none; padding: 28px 40px 48px calc(var(--side) + 64px); }
-  .app > * { max-width: 1120px; }
+  .app > * { max-width: 2000px; }
   .top { padding-top: 0; }
   .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
   .col { display: flex; flex-direction: column; }
   .hello h1 { font-size: 56px; }
-  .days-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .days-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .cols { gap: 32px; }
   .super-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; align-items: start; }
   .section > .seg { max-width: 360px; }
 
@@ -250,6 +251,15 @@ details.card[open] summary { margin-bottom: 14px; }
   .sheet-back { align-items: center; padding: 32px; }
   .sheet { border-radius: 34px; max-height: 88vh; max-width: 720px; padding: 30px; }
   .row:hover, .meal:hover { background-color: rgba(255,255,255,0.25); }
+}
+
+/* Pantallas muy anchas: todo en una fila */
+@media (min-width: 1700px) {
+  .days-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .days-grid .meal { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .days-grid .meal .lbl { width: auto; }
+  .days-grid .meal svg { display: none; }
+  .super-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 
 /* Fotos de recetas */
