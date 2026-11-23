@@ -284,7 +284,9 @@
       <div class="section"><div class="section-title"><h2>Ajustes</h2></div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px">
           <div class="field"><label for="startEdit">Fecha del día 1</label><input id="startEdit" type="date" value="${S.start || ''}" data-action-change="startEdit"></div>
-          <p class="muted small">Todo se guarda en este dispositivo. Cada uno puede usar la app en el suyo.</p>
+          <p class="muted small">Todo se guarda en este dispositivo. Las actualizaciones de la app no lo borran; lo único que lo borra es eliminar el ícono de inicio o los datos de Safari.</p>
+          <div class="btn-row"><button class="btn ghost" data-action="exportar">Guardar copia</button>
+            <label class="btn ghost" style="display:flex;align-items:center;justify-content:center;cursor:pointer">Restaurar copia<input type="file" accept="application/json,.json" data-import hidden></label></div>
         </div></div>`);
   }
 
@@ -431,6 +433,13 @@
     else if (a === 'cv') { UI.comidasVista = el.dataset.v; }
     else if (a === 'superToggle') { S.super[el.dataset.key] = !S.super[el.dataset.key]; }
     else if (a === 'superDel') { const k = el.dataset.key; S.extras = S.extras.filter((t) => 'extra|' + t !== k); delete S.super[k]; }
+    else if (a === 'exportar') {
+      const blob = new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' });
+      const file = new File([blob], `rutina-semanal-${hoy()}.json`, { type: 'application/json' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file] }).catch(() => {}); }
+      else { const a2 = document.createElement('a'); a2.href = URL.createObjectURL(blob); a2.download = file.name; a2.click(); setTimeout(() => URL.revokeObjectURL(a2.href), 1000); }
+      return;
+    }
     else if (a === 'superReset') {
       if (!UI.superConfirm) { UI.superConfirm = true; setTimeout(() => { UI.superConfirm = false; if (S.tab === 'super') render(); }, 3000); }
       else { S.super = {}; UI.superConfirm = false; toast('Lista desmarcada'); }
@@ -444,6 +453,13 @@
     if (t.dataset.num) { userChecks(S.user, UI.fecha)[t.dataset.num] = Number(t.value) || 0; save(); render(); }
     else if (t.dataset.med) { (S.medidas[S.user] = S.medidas[S.user] || {})[t.dataset.med] = Number(t.value) || null; save(); render(); }
     else if (t.dataset.actionChange === 'startEdit') { S.start = t.value || null; save(); render(); }
+    else if (t.matches('[data-import]') && t.files[0]) {
+      t.files[0].text().then((txt) => {
+        const d = JSON.parse(txt);
+        if (!d || typeof d !== 'object' || !('checks' in d)) throw new Error('formato');
+        S = Object.assign(defaults(), d); save(); render(); toast('Copia restaurada');
+      }).catch(() => toast('Ese archivo no es una copia válida'));
+    }
   });
 
   document.addEventListener('submit', (ev) => {
@@ -460,6 +476,9 @@
   });
 
   render();
+
+  // Pedir que el navegador no borre los datos por falta de espacio
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* nada */ }
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((r) => r.update()).catch(() => {}); });

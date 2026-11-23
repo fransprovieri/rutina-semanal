@@ -7,3 +7,5 @@ App web (PWA) del desafío de 14 días de Fran y Jazmín: checklist diario por p
 - **Publicar:** Settings → Pages → Deploy from a branch → `main` / root.
 - **En el iPhone:** abrir el link en Safari → Compartir → "Agregar a inicio".
 - Si cambiás archivos, subí `VERSION` en `sw.js`.
+
+**Importante para no perder datos:** los datos viven en `localStorage` con la clave `rutina-semanal-v1`. No cambiar esa clave ni el formato sin migrar. En Progreso → Ajustes hay "Guardar copia" / "Restaurar copia".
