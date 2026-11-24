@@ -322,3 +322,12 @@ html.tema-jaz { background: #C98DB0; }
 
 /* Sin zoom accidental (doble toque / pellizco) */
 html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
+
+/* Arreglos de layout en iPhone */
+.tit-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.field input { -webkit-appearance: none; appearance: none; display: block; min-width: 0; max-width: 100%; box-sizing: border-box; text-align: left; }
+.field input[type="date"] { text-align: left; }
+.field input[type="date"]::-webkit-date-and-time-value { text-align: left; margin: 0; }
+.kv { gap: 16px; }
+.kv span:first-child { flex: none; }
+.kv span:last-child { text-align: right; min-width: 0; }

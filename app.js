@@ -162,10 +162,10 @@
     let entreno;
     if (e === 'fuerza') {
       entreno = `<div class="card" style="display:flex;flex-direction:column;gap:10px">
-        <div><b style="font-size:17px">Fuerza · 15 min</b>${juntos}<p class="muted small">Calentamiento, 2 vueltas de 6 ejercicios y final. ${semana2() ? '45/15 s' : '40/20 s'}.</p></div>
+        <div><div class="tit-row"><b style="font-size:17px">Fuerza · 15 min</b>${juntos}</div><p class="muted small" style="margin-top:6px">Calentamiento, 2 vueltas de 6 ejercicios y final. ${semana2() ? '45/15 s' : '40/20 s'}.</p></div>
         <button class="btn green" data-action="startTimer">Empezar circuito con timer</button></div>`;
     } else if (e === 'correr') {
-      entreno = `<div class="card"><b style="font-size:17px">Correr · 15 min</b>${juntos}<p class="muted small">${esc(D.correr.tips[0])}</p></div>`;
+      entreno = `<div class="card"><div class="tit-row"><b style="font-size:17px">Correr · 15 min</b>${juntos}</div><p class="muted small" style="margin-top:6px">${esc(D.correr.tips[0])}</p></div>`;
     } else if (e === 'pilates') {
       entreno = `<div class="card"><b style="font-size:17px">Pilates</b><p class="muted small">Tu clase de hoy es tu entrenamiento del día. Tildalo en el checklist cuando vuelvas.</p></div>`;
     } else {
