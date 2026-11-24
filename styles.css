@@ -319,3 +319,6 @@ html.tema-jaz { background: #C98DB0; }
   .tema-jaz .sky::before { filter: blur(80px) saturate(60%) hue-rotate(115deg) brightness(1.15); }
   .tema-jaz .sky-2 { filter: blur(45px) saturate(45%) hue-rotate(115deg) brightness(1.15); }
 }
+
+/* Sin zoom accidental (doble toque / pellizco) */
+html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; }

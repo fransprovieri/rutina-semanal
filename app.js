@@ -651,6 +651,9 @@
   window.addEventListener('pageshow', chequearDia);
   setInterval(chequearDia, 60000);
 
+  // iOS ignora user-scalable=no: bloqueamos el pellizco a mano
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((e) => document.addEventListener(e, (ev) => ev.preventDefault()));
+
   // Pedir que el navegador no borre los datos por falta de espacio
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* nada */ }
 
