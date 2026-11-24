@@ -635,6 +635,22 @@
 
   render();
 
+  // Cambio de día automático: si la app quedó abierta/en segundo plano y pasó la medianoche,
+  // al volver pasa sola al día nuevo (solo si estabas mirando "hoy").
+  let diaVisto = hoy();
+  const chequearDia = () => {
+    const h = hoy();
+    if (h === diaVisto) return;
+    const veiaHoy = UI.fecha === diaVisto;
+    diaVisto = h;
+    if (veiaHoy) UI.fecha = h;
+    render();
+  };
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) chequearDia(); });
+  window.addEventListener('focus', chequearDia);
+  window.addEventListener('pageshow', chequearDia);
+  setInterval(chequearDia, 60000);
+
   // Pedir que el navegador no borre los datos por falta de espacio
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* nada */ }
 
