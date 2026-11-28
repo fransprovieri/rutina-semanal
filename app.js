@@ -209,33 +209,9 @@
   }
 
   function vistaComidas() {
-    const v = ['almuerzos', 'cenas', 'prep'].includes(UI.comidasVista) ? UI.comidasVista : 'almuerzos';
-    const seg = `<div class="seg" role="group" aria-label="Vista">
-      <button data-action="cv" data-v="almuerzos" aria-pressed="${v === 'almuerzos'}">Almuerzos</button>
-      <button data-action="cv" data-v="cenas" aria-pressed="${v === 'cenas'}">Cenas</button>
-      <button data-action="cv" data-v="prep" aria-pressed="${v === 'prep'}">Preparación</button></div>`;
-    const fila = (id) => { const r = D.recetas[id]; return `<button class="row" data-action="receta" data-id="${id}">${thumb(r)}<span class="grow"><b>${esc(r.nombre)}</b><span class="sub">${esc(r.tiempo)}</span></span>${badgeListo(id)}<span class="chev">${icon.chev}</span></button>`; };
-    let body;
-    if (v === 'almuerzos') {
-      const orden = [S.user, ...D.usuarios.map((u) => u.id).filter((u) => u !== S.user)];
-      body = `<p class="muted small" style="padding:0 6px">Comidas que se cocinan en tanda y quedan en tuppers. Cada día elegís la que tengas ganas.</p>` +
-        orden.map((u) => {
-          const nom = D.usuarios.find((x) => x.id === u).nombre;
-          const e = D.ensaladas[u];
-          return `<div class="section-title" style="padding-top:8px"><h2 style="font-size:19px">De ${esc(nom)}</h2><span>Ensalada cruda ${e.meta} por semana</span></div>
-            <div class="group flat">${D.almuerzos[u].filter((id) => !(D.sinStock || []).includes(id)).map(fila).join('')}${u === 'fran' ? fila('ensalada-fran') : ''}</div>`;
-        }).join('') +
-        ((D.sinStock || []).length ? `<div class="section-title" style="padding-top:8px"><h2 style="font-size:19px">Sin ingredientes esta semana</h2><span>Para la próxima compra</span></div><div class="group flat" style="opacity:0.6">${D.sinStock.map(fila).join('')}</div>` : '') +
-        `<div class="section-title" style="padding-top:8px"><h2 style="font-size:19px">Desayunos</h2></div><div class="group flat">${D.desayunos.map(fila).join('')}</div>`;
-    } else if (v === 'cenas') {
-      body = `<p class="muted small" style="padding:0 6px">Los ingredientes quedan cortados y porcionados (freezer y heladera). A la noche elegís una y se cocina en 15–30 min.</p>
-        <div class="group flat">${D.cenas.map(fila).join('')}</div>`;
-    } else {
-      body = `<button class="row card dark" data-action="receta" data-id="mealprep" style="padding:20px 24px">
-          <span class="grow"><span class="eyebrow"><em style="font-size:18px;color:var(--ink)">domingo</em></span><b>${esc(D.recetas.mealprep.nombre)}</b><span class="sub">${esc(D.recetas.mealprep.tiempo)} · deja todo listo para elegir</span></span><span class="chev">${icon.chev}</span></button>
-        <div class="days-grid">${D.guardado.map((g) => `<div class="card" style="display:flex;flex-direction:column;gap:8px"><div class="day-head" style="padding:0"><h3>${esc(g.titulo)}</h3>${g.dura ? `<span class="tag">${esc(g.dura)}</span>` : ''}</div><ul class="ing">${g.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}</div>`;
-    }
-    return `<div class="section"><div class="section-title"><h2>Comidas</h2></div>${seg}${body}</div>
+    const fila = (id) => { const r = D.recetas[id]; return `<button class="row" data-action="receta" data-id="${id}">${thumb(r)}<span class="grow"><b>${esc(r.nombre)}</b><span class="sub">${esc(r.tipo)} · ${esc(r.tiempo)}</span></span>${badgeListo(id)}<span class="chev">${icon.chev}</span></button>`; };
+    const ids = Object.keys(D.recetas);
+    return `<div class="section"><div class="section-title"><h2>Comidas</h2></div>
       <div class="card" style="display:flex;gap:16px;align-items:center">
         <div class="plate" role="img" aria-label="Plato: mitad verdura, un cuarto proteína, un cuarto carbohidratos"></div>
         <div class="legend"><b>La regla del plato</b>
@@ -243,7 +219,9 @@
           <span><i style="background:#B04A15"></i>Proteína · 1–2 palmas</span>
           <span><i style="background:#E0B44C"></i>Carbos · 1 puño</span>
           <span class="muted small">Grasa · 1 pulgar. Verdura primero.</span></div>
-      </div>`;
+      </div>
+      <div class="section-title" style="padding-top:8px"><h2 style="font-size:19px">Recetas</h2><span>${ids.length} en total</span></div>
+      <div class="group flat">${ids.map(fila).join('')}</div></div>`;
   }
 
   function vistaEntreno() {
@@ -477,15 +455,39 @@
     F.final.forEach((e) => seq.push({ fase: 'Final', nombre: e.nombre, tip: e.tip, s: e.segundos, tipo: 'work', fig: e.fig }));
     return seq;
   }
-  let actx;
-  const beep = (freq = 880, dur = 0.12) => {
+  let actx, silencio;
+  const sonidoOn = () => { try { return localStorage.getItem('rutina-sonido') !== 'off'; } catch (e) { return true; } };
+  // iPhone: el audio web se calla con el switch de silencio. Un <audio> mudo en loop lo pasa a modo "reproducción".
+  const WAV_MUDO = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+  const activarAudio = () => {
     try {
       actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      const o = actx.createOscillator(), g = actx.createGain();
-      o.frequency.value = freq; o.connect(g); g.connect(actx.destination);
-      g.gain.setValueAtTime(0.25, actx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + dur);
-      o.start(); o.stop(actx.currentTime + dur);
+      if (actx.state === 'suspended') actx.resume();
+      if (!silencio) { silencio = new Audio(WAV_MUDO); silencio.loop = true; }
+      silencio.play().catch(() => {});
     } catch (e) { /* sin audio */ }
+  };
+  const apagarAudio = () => { try { if (silencio) silencio.pause(); } catch (e) { /* nada */ } };
+  const beep = (freq = 880, dur = 0.15, vol = 0.7, delay = 0) => {
+    if (!sonidoOn()) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === 'suspended') actx.resume();
+      const t0 = actx.currentTime + delay;
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = 'square'; o.frequency.value = freq; o.connect(g); g.connect(actx.destination);
+      g.gain.setValueAtTime(vol * 0.5, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+      o.start(t0); o.stop(t0 + dur);
+    } catch (e) { /* sin audio */ }
+  };
+  const decir = (txt) => {
+    if (!sonidoOn() || !window.speechSynthesis) return;
+    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = 'es-AR'; u.rate = 1.05; speechSynthesis.speak(u); } catch (e) { /* nada */ }
+  };
+  // Cambio de sección: "work" = 3 pitidos agudos; "rest" = un tono grave largo
+  const sonarCambio = (seg) => {
+    if (seg.tipo === 'work') { beep(990, 0.14, 0.8); beep(990, 0.14, 0.8, 0.2); beep(1320, 0.3, 0.8, 0.4); }
+    else beep(440, 0.6, 0.8);
   };
   function startTimer() {
     const seq = secuencia();
@@ -496,16 +498,18 @@
     document.body.appendChild(T.el);
     document.body.style.overflow = 'hidden';
     try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then((w) => { if (T) T.wake = w; }).catch(() => {}); } catch (e) { /* nada */ }
-    beep(660);
+    activarAudio(); beep(660, 0.2); decir(seq[0].nombre);
     T.tick = setInterval(() => {
       if (!T || T.paused) return;
       T.left--;
-      if (T.left > 0 && T.left <= 3) beep(660, 0.08);
+      if (T.left > 0 && T.left <= 3) beep(700, 0.15);
       if (T.left <= 0) {
         T.i++;
         if (T.i >= T.seq.length) return terminarTimer(true);
         T.left = T.seq[T.i].s;
-        beep(T.seq[T.i].tipo === 'work' ? 990 : 520, 0.25);
+        sonarCambio(T.seq[T.i]);
+        const sg = T.seq[T.i], nx = T.seq[T.i + 1];
+        decir(sg.tipo === 'rest' ? 'Descanso' + (nx ? '. Sigue ' + nx.nombre : '') : sg.nombre);
       }
       pintarTimer();
     }, 1000);
@@ -518,7 +522,7 @@
     const done = T.seq.slice(0, T.i).reduce((a, s) => a + s.s, 0) + (cur.s - T.left);
     T.el.className = 'timer ' + cur.tipo;
     T.el.innerHTML = `<div class="timer-top"><span>${Math.round(done / total * 100)}%</span>
-        <button class="icon-btn" data-t="stop" aria-label="Terminar">${icon.close}</button></div>
+        <span style="display:flex;gap:8px"><button class="icon-btn" data-t="sound" aria-label="Sonido">${sonidoOn() ? '🔊' : '🔇'}</button><button class="icon-btn" data-t="stop" aria-label="Terminar">${icon.close}</button></span></div>
       <div class="timer-main"><span class="phase">${esc(cur.fase)}</span>
         ${cur.tipo === 'rest' && next && next.fig ? `<div class="timer-fig dim">${figura(next.fig)}</div>` : cur.fig ? `<div class="timer-fig">${figura(cur.fig)}</div>` : ''}
         <h2>${esc(cur.nombre)}</h2>
@@ -533,9 +537,10 @@
     try { if (T.wake) T.wake.release(); } catch (e) { /* nada */ }
     T.el.remove(); T = null;
     document.body.style.overflow = '';
+    apagarAudio(); try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) { /* nada */ }
     if (completo) {
       const cd = userChecks(S.user, hoy()); cd.entreno = true; push(['checks', S.user, hoy()], cd); save();
-      beep(990, 0.3); setTimeout(() => beep(1320, 0.4), 250);
+      beep(990, 0.3, 0.8); beep(1320, 0.5, 0.8, 0.25);
       toast('¡Circuito completo! Entreno tildado.');
       render();
     }
@@ -544,6 +549,7 @@
     const b = ev.target.closest('[data-t]');
     if (!b || !T) return;
     if (b.dataset.t === 'stop') terminarTimer(false);
+    else if (b.dataset.t === 'sound') { try { localStorage.setItem('rutina-sonido', sonidoOn() ? 'off' : 'on'); } catch (e) { /* nada */ } if (sonidoOn()) { activarAudio(); beep(880); } else { try { speechSynthesis.cancel(); } catch (e) { /* nada */ } } pintarTimer(); }
     else if (b.dataset.t === 'pause') { T.paused = !T.paused; pintarTimer(); }
     else if (b.dataset.t === 'skip') { T.left = 1; T.paused = false; }
   });
