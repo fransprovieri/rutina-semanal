@@ -457,27 +457,38 @@
   }
   let actx, silencio;
   const sonidoOn = () => { try { return localStorage.getItem('rutina-sonido') !== 'off'; } catch (e) { return true; } };
-  // iPhone: el audio web se calla con el switch de silencio. Un <audio> mudo en loop lo pasa a modo "reproducción".
-  const WAV_MUDO = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+  // iPhone: el audio web se calla con el switch de silencio y se suspende al rato.
+  // Un <audio> mudo (1 s real de silencio) en loop mantiene la sesión de audio activa durante todo el circuito.
+  const wavMudo = () => {
+    const n = 8000, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
+    const w = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, 8000, true); v.setUint32(28, 16000, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+    return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+  };
   const activarAudio = () => {
     try {
       actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      if (actx.state === 'suspended') actx.resume();
-      if (!silencio) { silencio = new Audio(WAV_MUDO); silencio.loop = true; }
+      if (actx.state !== 'running') actx.resume();
+      if (!silencio) { silencio = new Audio(wavMudo()); silencio.loop = true; silencio.setAttribute('playsinline', ''); }
       silencio.play().catch(() => {});
     } catch (e) { /* sin audio */ }
   };
   const apagarAudio = () => { try { if (silencio) silencio.pause(); } catch (e) { /* nada */ } };
   const beep = (freq = 880, dur = 0.15, vol = 0.7, delay = 0) => {
     if (!sonidoOn()) return;
-    try {
-      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      if (actx.state === 'suspended') actx.resume();
-      const t0 = actx.currentTime + delay;
+    const tocar = () => {
+      const t0 = actx.currentTime + 0.03 + delay;
       const o = actx.createOscillator(), g = actx.createGain();
       o.type = 'square'; o.frequency.value = freq; o.connect(g); g.connect(actx.destination);
       g.gain.setValueAtTime(vol * 0.5, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
-      o.start(t0); o.stop(t0 + dur);
+      o.start(t0); o.stop(t0 + dur + 0.02);
+    };
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (silencio && silencio.paused) silencio.play().catch(() => {});
+      if (actx.state === 'running') tocar();
+      else { const r = actx.resume(); if (r && r.then) r.then(tocar).catch(() => {}); else tocar(); }
     } catch (e) { /* sin audio */ }
   };
   const decir = (txt) => {
