@@ -455,51 +455,66 @@
     F.final.forEach((e) => seq.push({ fase: 'Final', nombre: e.nombre, tip: e.tip, s: e.segundos, tipo: 'work', fig: e.fig }));
     return seq;
   }
-  let actx, silencio;
+  let silencio, SFX = null;
   const sonidoOn = () => { try { return localStorage.getItem('rutina-sonido') !== 'off'; } catch (e) { return true; } };
-  // iPhone: el audio web se calla con el switch de silencio y se suspende al rato.
-  // Un <audio> mudo (1 s real de silencio) en loop mantiene la sesión de audio activa durante todo el circuito.
-  const wavMudo = () => {
-    const n = 8000, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
+  // WAV generado a mano: lista de [frecuencia Hz (0 = silencio), segundos]
+  const wavDe = (partes, vol = 0.9) => {
+    const sr = 22050, total = Math.round(partes.reduce((a, q) => a + q[1], 0) * sr), buf = new ArrayBuffer(44 + total * 2), v = new DataView(buf);
     const w = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
-    w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
-    v.setUint32(24, 8000, true); v.setUint32(28, 16000, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
-    return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+    w(0, 'RIFF'); v.setUint32(4, 36 + total * 2, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, total * 2, true);
+    let i = 0;
+    partes.forEach(([f, d]) => {
+      const n = Math.round(d * sr);
+      for (let k = 0; k < n; k++, i++) {
+        const env = Math.min(1, k / 200, (n - k) / 400); // sin clicks
+        const x = f ? Math.sign(Math.sin(2 * Math.PI * f * k / sr)) * 0.6 + Math.sin(2 * Math.PI * f * k / sr) * 0.4 : 0;
+        v.setInt16(44 + i * 2, Math.round(x * env * vol * 32000), true);
+      }
+    });
+    return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
   };
+  const crearSfx = () => {
+    const defs = {
+      tick: [[880, 0.18]],
+      work: [[1046, 0.16], [0, 0.08], [1046, 0.16], [0, 0.08], [1568, 0.4]],
+      rest: [[523, 0.25], [0, 0.05], [392, 0.5]],
+      fin: [[1046, 0.2], [0, 0.05], [1318, 0.2], [0, 0.05], [1568, 0.5]],
+      mudo: [[0, 1]],
+    };
+    SFX = {};
+    Object.keys(defs).forEach((k) => { const a = new Audio(wavDe(defs[k])); a.preload = 'auto'; a.setAttribute('playsinline', ''); SFX[k] = a; });
+    SFX.mudo.loop = true; silencio = SFX.mudo;
+  };
+  // Se llama dentro del toque del usuario: "desbloquea" cada audio para poder sonar después sin tocar la pantalla (iOS)
   const activarAudio = () => {
     try {
-      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      if (actx.state !== 'running') actx.resume();
-      if (!silencio) { silencio = new Audio(wavMudo()); silencio.loop = true; silencio.setAttribute('playsinline', ''); }
-      silencio.play().catch(() => {});
+      if (!SFX) crearSfx();
+      Object.keys(SFX).forEach((k) => {
+        const a = SFX[k];
+        if (k === 'mudo') { a.play().catch(() => {}); return; }
+        a.muted = true;
+        const p = a.play();
+        const listo = () => { a.pause(); a.currentTime = 0; a.muted = false; };
+        if (p && p.then) p.then(listo).catch(() => { a.muted = false; }); else listo();
+      });
     } catch (e) { /* sin audio */ }
   };
   const apagarAudio = () => { try { if (silencio) silencio.pause(); } catch (e) { /* nada */ } };
-  const beep = (freq = 880, dur = 0.15, vol = 0.7, delay = 0) => {
+  const sonar = (k) => {
     if (!sonidoOn()) return;
-    const tocar = () => {
-      const t0 = actx.currentTime + 0.03 + delay;
-      const o = actx.createOscillator(), g = actx.createGain();
-      o.type = 'square'; o.frequency.value = freq; o.connect(g); g.connect(actx.destination);
-      g.gain.setValueAtTime(vol * 0.5, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
-      o.start(t0); o.stop(t0 + dur + 0.02);
-    };
     try {
-      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (!SFX) return;
       if (silencio && silencio.paused) silencio.play().catch(() => {});
-      if (actx.state === 'running') tocar();
-      else { const r = actx.resume(); if (r && r.then) r.then(tocar).catch(() => {}); else tocar(); }
+      const a = SFX[k]; a.muted = false; a.currentTime = 0; a.play().catch(() => {});
     } catch (e) { /* sin audio */ }
   };
   const decir = (txt) => {
     if (!sonidoOn() || !window.speechSynthesis) return;
-    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = 'es-AR'; u.rate = 1.05; speechSynthesis.speak(u); } catch (e) { /* nada */ }
+    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = 'es-AR'; u.rate = 1.05; setTimeout(() => speechSynthesis.speak(u), 900); } catch (e) { /* nada */ }
   };
-  // Cambio de sección: "work" = 3 pitidos agudos; "rest" = un tono grave largo
-  const sonarCambio = (seg) => {
-    if (seg.tipo === 'work') { beep(990, 0.14, 0.8); beep(990, 0.14, 0.8, 0.2); beep(1320, 0.3, 0.8, 0.4); }
-    else beep(440, 0.6, 0.8);
-  };
+  // Cambio de sección: "work" = pitidos agudos subiendo; "rest" = tono grave bajando
+  const sonarCambio = (seg) => sonar(seg.tipo === 'work' ? 'work' : 'rest');
   function startTimer() {
     const seq = secuencia();
     T = { seq, i: 0, left: seq[0].s, paused: false, el: document.createElement('div'), wake: null };
@@ -509,11 +524,11 @@
     document.body.appendChild(T.el);
     document.body.style.overflow = 'hidden';
     try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then((w) => { if (T) T.wake = w; }).catch(() => {}); } catch (e) { /* nada */ }
-    activarAudio(); beep(660, 0.2); decir(seq[0].nombre);
+    activarAudio(); setTimeout(() => sonar('work'), 150); decir(seq[0].nombre);
     T.tick = setInterval(() => {
       if (!T || T.paused) return;
       T.left--;
-      if (T.left > 0 && T.left <= 3) beep(700, 0.15);
+      if (T.left > 0 && T.left <= 3) sonar('tick');
       if (T.left <= 0) {
         T.i++;
         if (T.i >= T.seq.length) return terminarTimer(true);
@@ -551,7 +566,7 @@
     apagarAudio(); try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) { /* nada */ }
     if (completo) {
       const cd = userChecks(S.user, hoy()); cd.entreno = true; push(['checks', S.user, hoy()], cd); save();
-      beep(990, 0.3, 0.8); beep(1320, 0.5, 0.8, 0.25);
+      sonar('fin'); setTimeout(apagarAudio, 1500);
       toast('¡Circuito completo! Entreno tildado.');
       render();
     }
@@ -560,7 +575,7 @@
     const b = ev.target.closest('[data-t]');
     if (!b || !T) return;
     if (b.dataset.t === 'stop') terminarTimer(false);
-    else if (b.dataset.t === 'sound') { try { localStorage.setItem('rutina-sonido', sonidoOn() ? 'off' : 'on'); } catch (e) { /* nada */ } if (sonidoOn()) { activarAudio(); beep(880); } else { try { speechSynthesis.cancel(); } catch (e) { /* nada */ } } pintarTimer(); }
+    else if (b.dataset.t === 'sound') { try { localStorage.setItem('rutina-sonido', sonidoOn() ? 'off' : 'on'); } catch (e) { /* nada */ } if (sonidoOn()) { activarAudio(); setTimeout(() => sonar('tick'), 150); } else { try { speechSynthesis.cancel(); } catch (e) { /* nada */ } } pintarTimer(); }
     else if (b.dataset.t === 'pause') { T.paused = !T.paused; pintarTimer(); }
     else if (b.dataset.t === 'skip') { T.left = 1; T.paused = false; }
   });
